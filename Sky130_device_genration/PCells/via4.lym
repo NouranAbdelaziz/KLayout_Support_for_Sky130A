@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description/>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>true</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text>import pya
+import math
+
+"""
+This sample PCell implements a library called "MyLib" with a single PCell that
+draws a circle. It demonstrates the basic implementation techniques for a PCell 
+and how to use the "guiding shape" feature to implement a handle for the circle
+radius.
+
+NOTE: after changing the code, the macro needs to be rerun to install the new
+implementation. The macro is also set to "auto run" to install the PCell 
+when KLayout is run.
+"""
+
+class via4(pya.PCellDeclarationHelper):
+  """
+  The PCell declaration for the circle
+  """
+
+  def __init__(self):
+
+    # Important: initialize the super class
+    super(via4, self).__init__()
+
+    # declare the parameters
+    
+    self.param("l", self.TypeInt, "Length", default = 1180)
+    self.param("w", self.TypeInt, "Width", default = 1180)
+    self.param("x", self.TypeInt, "X repeat", default = 1)
+    self.param("y", self.TypeInt, "Y repeat", default = 1)
+         
+    
+  def display_text_impl(self):
+    # Provide a descriptive text for the cell
+    return "via4(L=" + str(self.l) + ",W=" + ('%.3f' % self.w) + ")"
+  
+  
+  def can_create_from_shape_impl(self):
+    # Implement the "Create PCell from shape" protocol: we can use any shape which 
+    # has a finite bounding box
+    return self.shape.is_box() or self.shape.is_polygon() or self.shape.is_path()
+  
+  def parameters_from_shape_impl(self):
+    # Implement the "Create PCell from shape" protocol: we set r and l from the shape's 
+    # bounding box width and layer
+    #self.r = self.shape.bbox().width() * self.layout.dbu / 2
+    self.l1 = self.layout.get_info(self.layer)
+    self.l2 = self.layout.get_info(self.layer)
+  
+  def transformation_from_shape_impl(self):
+    # Implement the "Create PCell from shape" protocol: we use the center of the shape's
+    # bounding box to determine the transformation
+    return pya.Trans(self.shape.bbox().center())
+  
+  def produce_impl(self):
+  
+    met4 = self.layout.layer(71, 20)
+    met5 = self.layout.layer(72, 20)
+    via4 = self.layout.layer(71, 44)
+    
+   
+    l_factor = (self.l-1180)*0.5
+    w_factor = (self.w-1180)*0.5
+    
+     
+    self.cell.shapes(met4).insert(pya.Box(-590.00 - w_factor, -590.00 - l_factor, 590.00 + w_factor, 590.00 + l_factor))
+    self.cell.shapes(met5).insert(pya.Box(-710.00 - w_factor, -710.00 - l_factor, 710.00 + w_factor, 710.00 + l_factor))
+    
+      
+      
+    total_width = self.w
+    total_length = self.l
+    vias_plus_spaces_w = total_width / 800.0
+    vias_plus_spaces_l = total_length / 800.0
+      
+    if(self.w==1180):
+      vias_num_w=1
+    else:
+      vias_num_w = round(vias_plus_spaces_w/2)
+    if(self.l==1180):
+      vias_num_l=1
+    else:
+      vias_num_l = round(vias_plus_spaces_l/2)
+      
+      
+    y_uppers=[]
+    y_lowers=[]
+    x_lefts=[]
+    x_rights=[]
+      
+    y_uppers.append( 400 + ((vias_num_l-1)*800))
+    y_lowers.append( y_uppers[0] - 800 )
+    
+    for i in range(vias_num_l-1):
+      y_uppers.append(y_lowers[i] - 800)
+      y_lowers.append(y_uppers[i+1] - 800)
+        
+    x_lefts.append(400 + ((vias_num_w-1)*800))
+    x_rights.append(x_lefts[0] - 800)
+      
+    for i in range(vias_num_w-1): 
+      x_lefts.append(x_rights[i] - 800)
+      x_rights.append( x_lefts[i+1] - 800)
+      
+  
+    for i in range(vias_num_w):
+      for j in range(vias_num_l):
+        self.cell.shapes(via4).insert(pya.Box(x_lefts[i], y_lowers[j], x_rights[i], y_uppers[j]))
+          
+          
+</text>
+</klayout-macro>

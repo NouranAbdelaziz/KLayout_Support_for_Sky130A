@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description/>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>true</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text>import pya
+import math
+
+"""
+This sample PCell implements a library called "MyLib" with a single PCell that
+draws a circle. It demonstrates the basic implementation techniques for a PCell 
+and how to use the "guiding shape" feature to implement a handle for the circle
+radius.
+
+NOTE: after changing the code, the macro needs to be rerun to install the new
+implementation. The macro is also set to "auto run" to install the PCell 
+when KLayout is run.
+"""
+
+class sky130_fd_pr__res_generic_nd(pya.PCellDeclarationHelper):
+  """
+  The PCell declaration for the circle
+  """
+
+  def __init__(self):
+
+    # Important: initialize the super class
+    super(sky130_fd_pr__res_generic_nd, self).__init__()
+
+    # declare the parameters
+    
+    self.param("l", self.TypeInt, "Length", default = 2100)
+    self.param("w", self.TypeInt, "Width", default = 420)
+    self.param("x", self.TypeInt, "X repeat", default = 1)
+    self.param("y", self.TypeInt, "Y repeat", default = 1)
+         
+    
+  def display_text_impl(self):
+    # Provide a descriptive text for the cell
+    return "sky130_fd_pr__res_generic_nd(L=" + str(self.l) + ",W=" + ('%.3f' % self.w) + ")"
+  
+  
+  def can_create_from_shape_impl(self):
+    # Implement the "Create PCell from shape" protocol: we can use any shape which 
+    # has a finite bounding box
+    return self.shape.is_box() or self.shape.is_polygon() or self.shape.is_path()
+  
+  def parameters_from_shape_impl(self):
+    # Implement the "Create PCell from shape" protocol: we set r and l from the shape's 
+    # bounding box width and layer
+    #self.r = self.shape.bbox().width() * self.layout.dbu / 2
+    self.l1 = self.layout.get_info(self.layer)
+    self.l2 = self.layout.get_info(self.layer)
+  
+  def transformation_from_shape_impl(self):
+    # Implement the "Create PCell from shape" protocol: we use the center of the shape's
+    # bounding box to determine the transformation
+    return pya.Trans(self.shape.bbox().center())
+  
+  def produce_impl(self):
+  
+    prBoundary = self.layout.layer(235, 4)
+    diff = self.layout.layer(65, 20)
+    diff_res = self.layout.layer(65, 13)
+    tap = self.layout.layer(65, 44)
+    nsdm = self.layout.layer(93, 44)
+    psdm = self.layout.layer(94, 20)
+    li = self.layout.layer(67, 20)
+    m1 = self.layout.layer(68, 20)
+    licon = self.layout.layer(66, 44)
+    
+    l_factor = (self.l-2100)*0.5
+    w_factor = (self.w-420)*0.5
+    
+    self.cell.shapes(prBoundary).insert(pya.Box(-735.00 - w_factor, -2090.00 - l_factor, 735.00 + w_factor, 2090.00 + l_factor))
+    self.cell.shapes(diff).insert(pya.Box(-210.00 - w_factor, -1565.00 - l_factor, 210.00 + w_factor, 1565.00 + l_factor))
+    self.cell.shapes(diff_res).insert(pya.Box(-210.00 - w_factor, -1050.00 - l_factor, 210.00 + w_factor, 1050.00 + l_factor))
+    self.cell.shapes(tap).insert(pya.Box(-820.00 - w_factor, -2005.00 - l_factor, -650.00 - w_factor, 2005.00 + l_factor))
+    self.cell.shapes(tap).insert(pya.Box(650.00 + w_factor, -2005.00 - l_factor, 820.00 + w_factor, 2005.00 + l_factor))
+    self.cell.shapes(tap).insert(pya.Box(-820.00 - w_factor, 2005.00 + l_factor, 820.00 + w_factor, 2175.00 + l_factor)) 
+    self.cell.shapes(tap).insert(pya.Box(-820.00 - w_factor, -2175.00 - l_factor, 820.00 + w_factor, -2005.00 - l_factor))
+    self.cell.shapes(psdm).insert(pya.Box(-945.00 - w_factor, -1880.00 - l_factor, -525.00 - w_factor, 1880.00 + l_factor))
+    self.cell.shapes(psdm).insert(pya.Box(525.00 + w_factor, -1880.00 - l_factor, 945.00 + w_factor, 1880.00 + l_factor))
+    self.cell.shapes(psdm).insert(pya.Box(-945.00 - w_factor, 1880.00 + l_factor, 945.00 + w_factor, 2300.00 + l_factor)) 
+    self.cell.shapes(psdm).insert(pya.Box(-945.00 - w_factor, -2300.00 - l_factor, 945.00 + w_factor, -1880.00 - l_factor))
+    self.cell.shapes(nsdm).insert(pya.Box(-355.00 - w_factor, -1690.00 - l_factor, 355.00 + w_factor, 1690.00 + l_factor))
+    self.cell.shapes(li).insert(pya.Box(-820.00 - w_factor, -2005.00 - l_factor, -650.00 - w_factor, 2005.00 + l_factor))
+    self.cell.shapes(li).insert(pya.Box(650.00 + w_factor, -2005.00 - l_factor, 820.00 + w_factor, 2005.00 + l_factor))
+    self.cell.shapes(li).insert(pya.Box(-820.00 - w_factor, 2005.00 + l_factor, 820.00 + w_factor, 2175.00 + l_factor)) 
+    self.cell.shapes(li).insert(pya.Box(-820.00 - w_factor, -2175.00 - l_factor, 820.00 + w_factor, -2005.00 - l_factor))
+    self.cell.shapes(li).insert(pya.Box(-230.00 - w_factor, 1335.00 + l_factor, 230.00 + w_factor, 1505.00 + l_factor))
+    self.cell.shapes(li).insert(pya.Box(-150.00 - w_factor, 1135.00 + l_factor, 150.00 + w_factor, 1335.00 + l_factor))
+    self.cell.shapes(li).insert(pya.Box(-230.00 - w_factor, -1505.00 - l_factor, 230.00 + w_factor, -1335.00 - l_factor))
+    self.cell.shapes(li).insert(pya.Box(-150.00 - w_factor, -1335.00 - l_factor, 150.00 + w_factor, -1135.00 - l_factor))
+    self.cell.shapes(m1).insert(pya.Box(-180.00 - w_factor, 1075.00 + l_factor, 180.00 + w_factor, 1565.00 + l_factor))
+    self.cell.shapes(m1).insert(pya.Box(-180.00 - w_factor, -1565.00 - l_factor, 180.00 + w_factor, -1075.00 - l_factor))
+    
+    total_length = 1615*2 + (self.l-2100)
+    licons_plus_spaces = total_length / 170.0
+    licons_num = round(licons_plus_spaces/2)
+    y_upper = 1615 + ((licons_num-10)*170)
+    y_lower = y_upper - 170
+
+    for i in range(licons_num):
+      self.cell.shapes(licon).insert(pya.Box(-820.00 - w_factor, y_lower, -650.00 - w_factor, y_upper))
+      self.cell.shapes(licon).insert(pya.Box(650.00 + w_factor, y_lower, 820.00 + w_factor, y_upper))
+      y_upper = y_lower - 170
+      y_lower = y_upper - 170
+
+    if(self.w==420):
+      licons_num = 2
+    else:
+      total_length = 255*2 + (self.w-420)
+      licons_plus_spaces = total_length / 170.0
+      licons_num = round(licons_plus_spaces/2)+1
+      
+    x_left = 255 + ((licons_num-2)*170)
+    x_right = x_left - 170
+
+    for i in range(licons_num):
+      self.cell.shapes(licon).insert(pya.Box(x_left, 2005.00 + l_factor, x_right, 2175.00 + l_factor))
+      self.cell.shapes(licon).insert(pya.Box(x_left, -2175.00 - l_factor, x_right, -2005.00 - l_factor))
+      x_left = x_right - 170
+      x_right = x_left - 170
+      
+    if(self.w==420):
+      licons_num = 1
+    else:
+      total_length = 85*2 + (self.w-420)
+      licons_plus_spaces = total_length / 170.0
+      licons_num = round(licons_plus_spaces/2)+1
+      
+    x_left = 85 + ((licons_num-1)*170)
+    x_right = x_left - 170
+    
+    for i in range(licons_num):
+      self.cell.shapes(licon).insert(pya.Box(x_left, 1335.00 + l_factor, x_right, 1505.00 + l_factor))
+      self.cell.shapes(licon).insert(pya.Box(x_left, -1505.00 - l_factor, x_right, -1335.00 - l_factor))
+      x_left = x_right - 170
+      x_right = x_left - 170
+    
+
+"""
+    extra_width = self.w-420
+    if(extra_width==0):
+      licons_num = 1
+    else:
+      licons_num = math.floor(extra_width/170)
+    x_left = -85 - ((licons_num-1)*170)
+    x_right = x_left + 170
+  
+    for i in range(licons_num):
+      self.cell.shapes(licon).insert(pya.Box(x_left, 1335 + l_factor, x_right, 1505 + l_factor))
+      self.cell.shapes(licon).insert(pya.Box(x_left, -1505 - l_factor, x_right, -1335 - l_factor))
+      x_left = x_right + 170
+      x_right = x_left + 170
+      
+    extra_width = self.w-420
+    if(extra_width==0):
+      licons_num = 1
+    else:
+      licons_num = math.floor(extra_width/170)
+    licons_num = licons_num + 1
+    x_left = -85 - ((licons_num-1)*170)
+    x_right = x_left + 170
+    
+    for i in range(licons_num):
+      self.cell.shapes(licon).insert(pya.Box(x_left,2005 + l_factor , x_right, 2175 + l_factor))
+      self.cell.shapes(licon).insert(pya.Box(x_left, -2175 - l_factor, x_right, -2005 - l_factor))
+      x_left = x_right + 170
+      x_right = x_left + 170
+"""</text>
+</klayout-macro>

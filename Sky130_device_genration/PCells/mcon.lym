@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description/>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>true</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text>import pya
+import math
+
+"""
+This sample PCell implements a library called "MyLib" with a single PCell that
+draws a circle. It demonstrates the basic implementation techniques for a PCell 
+and how to use the "guiding shape" feature to implement a handle for the circle
+radius.
+
+NOTE: after changing the code, the macro needs to be rerun to install the new
+implementation. The macro is also set to "auto run" to install the PCell 
+when KLayout is run.
+"""
+
+class mcon(pya.PCellDeclarationHelper):
+  """
+  The PCell declaration for the circle
+  """
+
+  def __init__(self):
+
+    # Important: initialize the super class
+    super(mcon, self).__init__()
+
+    # declare the parameters
+    
+    self.param("l", self.TypeInt, "Length", default = 170)
+    self.param("w", self.TypeInt, "Width", default = 170)
+    
+         
+    
+  def display_text_impl(self):
+    # Provide a descriptive text for the cell
+    return "mcon(L=" + str(self.l) + ",W=" + ('%.3f' % self.w) + ")"
+  
+  
+  def can_create_from_shape_impl(self):
+    # Implement the "Create PCell from shape" protocol: we can use any shape which 
+    # has a finite bounding box
+    return self.shape.is_box() or self.shape.is_polygon() or self.shape.is_path()
+  
+  def parameters_from_shape_impl(self):
+    # Implement the "Create PCell from shape" protocol: we set r and l from the shape's 
+    # bounding box width and layer
+    #self.r = self.shape.bbox().width() * self.layout.dbu / 2
+    self.l1 = self.layout.get_info(self.layer)
+    self.l2 = self.layout.get_info(self.layer)
+  
+  def transformation_from_shape_impl(self):
+    # Implement the "Create PCell from shape" protocol: we use the center of the shape's
+    # bounding box to determine the transformation
+    return pya.Trans(self.shape.bbox().center())
+  
+  def produce_impl(self):
+  
+    met1 = self.layout.layer(68, 20)
+    li = self.layout.layer(67, 20)
+    mcon = self.layout.layer(67, 44)
+    
+   
+    l_factor = (self.l-170)*0.5
+    w_factor = (self.w-170)*0.5
+    
+     
+   
+    
+    if(self.w&lt;self.l):
+      self.cell.shapes(met1).insert(pya.Box(-115.00 - w_factor, -145.00 - l_factor, 115.00 + w_factor, 145.00 + l_factor))
+    
+    else:
+      self.cell.shapes(met1).insert(pya.Box(-145.00 - w_factor, -115.00 - l_factor, 145.00 + w_factor, 115.00 + l_factor))
+      
+      
+    self.cell.shapes(li).insert(pya.Box(-85.00 - w_factor, -85.00 - l_factor, 85.00 + w_factor, 85.00 + l_factor))
+      
+    total_width = self.w
+    total_length = self.l
+    mcons_plus_spaces_w = total_width / 170.0
+    mcons_plus_spaces_l = total_length / 170.0
+      
+    if(self.w==170):
+      mcons_num_w=1
+    else:
+      mcons_num_w = math.floor(mcons_plus_spaces_w/2)
+    if(self.l==170):
+      mcons_num_l=1
+    else:
+      mcons_num_l = math.floor(mcons_plus_spaces_l/2)
+      
+      
+    y_uppers=[]
+    y_lowers=[]
+    x_lefts=[]
+    x_rights=[]
+      
+    y_uppers.append( 85 + ((mcons_num_l-1)*170))
+    y_lowers.append( y_uppers[0] - 170 )
+    
+    for i in range(mcons_num_l-1):
+      y_uppers.append(y_lowers[i] - 170)
+      y_lowers.append(y_uppers[i+1] - 170)
+        
+    x_lefts.append(85 + ((mcons_num_w-1)*170))
+    x_rights.append(x_lefts[0] - 170)
+      
+    for i in range(mcons_num_w-1): 
+      x_lefts.append(x_rights[i] - 170)
+      x_rights.append( x_lefts[i+1] -170)
+      
+  
+    for i in range(mcons_num_w):
+      for j in range(mcons_num_l):
+        self.cell.shapes(mcon).insert(pya.Box(x_lefts[i], y_lowers[j], x_rights[i], y_uppers[j]))
+          
+          
+</text>
+</klayout-macro>

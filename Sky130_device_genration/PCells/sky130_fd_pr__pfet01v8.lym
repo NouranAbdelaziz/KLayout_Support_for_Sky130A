@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description/>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>true</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text>import pya
+import math
+
+"""
+This sample PCell implements a library called "MyLib" with a single PCell that
+draws a circle. It demonstrates the basic implementation techniques for a PCell 
+and how to use the "guiding shape" feature to implement a handle for the circle
+radius.
+
+NOTE: after changing the code, the macro needs to be rerun to install the new
+implementation. The macro is also set to "auto run" to install the PCell 
+when KLayout is run.
+"""
+
+class sky130_fd_pr__pfet01v8(pya.PCellDeclarationHelper):
+  """
+  The PCell declaration for the circle
+  """
+
+  def __init__(self):
+
+    # Important: initialize the super class
+    super(sky130_fd_pr__pfet01v8, self).__init__()
+
+    # declare the parameters
+    
+    self.param("l", self.TypeInt, "Length", default = 150)
+    self.param("w", self.TypeInt, "Width", default = 420)
+    self.param("x", self.TypeInt, "X repeat", default = 1)
+    self.param("y", self.TypeInt, "Y repeat", default = 1)
+    self.param("top_gate", self.TypeBoolean, "Add top gate contact", default = 1)
+    self.param("bottom_gate", self.TypeBoolean, "Add bottom gate contact", default = 1)
+    self.param("guard_ring", self.TypeBoolean, "Add guard ring", default = 1)
+    self.param("metal_guard_ring", self.TypeBoolean, "Add full metal guard ring", default = 1)
+    self.param("left_contact", self.TypeBoolean, "Add left guard ring contact", default = 1)
+    self.param("right_contact", self.TypeBoolean, "Add right guard ring contact", default = 1)
+    self.param("bottom_contact", self.TypeBoolean, "Add bottom guard ring contact", default = 1)
+    self.param("top_contact", self.TypeBoolean, "Add top guard ring contact", default = 1)
+         
+    
+  def display_text_impl(self):
+    # Provide a descriptive text for the cell
+    return "sky130_fd_pr__pfet01v8(L=" + str(self.l) + ",W=" + ('%.3f' % self.w) + ")"
+  
+  
+  def can_create_from_shape_impl(self):
+    # Implement the "Create PCell from shape" protocol: we can use any shape which 
+    # has a finite bounding box
+    return self.shape.is_box() or self.shape.is_polygon() or self.shape.is_path()
+  
+  def parameters_from_shape_impl(self):
+    # Implement the "Create PCell from shape" protocol: we set r and l from the shape's 
+    # bounding box width and layer
+    #self.r = self.shape.bbox().width() * self.layout.dbu / 2
+    self.l1 = self.layout.get_info(self.layer)
+    self.l2 = self.layout.get_info(self.layer)
+  
+  def transformation_from_shape_impl(self):
+    # Implement the "Create PCell from shape" protocol: we use the center of the shape's
+    # bounding box to determine the transformation
+    return pya.Trans(self.shape.bbox().center())
+  
+  def produce_impl(self):
+  
+    prBoundary = self.layout.layer(235, 4)
+    diff = self.layout.layer(65, 20)
+    nwell = self.layout.layer(64, 20)
+    tap = self.layout.layer(65, 44)
+    nsdm = self.layout.layer(93, 44)
+    psdm = self.layout.layer(94, 20)
+    poly = self.layout.layer(66, 20)
+    npc = self.layout.layer(95, 20)
+    li = self.layout.layer(67, 20)
+    m1 = self.layout.layer(68, 20)
+    licon = self.layout.layer(66, 44)
+    mcon = self.layout.layer(67, 44)
+    
+    #880
+    #75
+    l_factor = (self.l-150)*0.5
+    w_factor = (self.w-420)*0.5
+    #840
+    #210
+    
+    if(self.top_gate==1 and self.bottom_gate==1):
+      
+      if(self.guard_ring==1):
+        self.cell.shapes(prBoundary).insert(pya.Box(-790.00 - l_factor, -1040.00 - w_factor, 790.00 + l_factor, 1040.00 + w_factor))
+        self.cell.shapes(tap).insert(pya.Box(-875.00 - l_factor, 955.00 + w_factor, 875.00 + l_factor, 1125.00 + w_factor))
+        self.cell.shapes(tap).insert(pya.Box(-875.00 - l_factor, -1125.00 - w_factor, 875.00 + l_factor, -955.00 - w_factor))
+        self.cell.shapes(tap).insert(pya.Box(-875.00 - l_factor, -955.00 - w_factor, -705.00 - l_factor, 955.00 + w_factor))
+        self.cell.shapes(tap).insert(pya.Box(705.00 + l_factor, -955.00 - w_factor, 875.00 + l_factor, 955.00 + w_factor))
+        self.cell.shapes(nsdm).insert(pya.Box(-1000.00 - l_factor, -830.00 - w_factor, -580.00 - l_factor, 830.00 + w_factor))
+        self.cell.shapes(nsdm).insert(pya.Box(580.00 + l_factor, -830.00 - w_factor, 1000.00 + l_factor, 830.00 + w_factor))
+        self.cell.shapes(nsdm).insert(pya.Box(-1000.00 - l_factor, 830.00 + w_factor, 1000.00 + l_factor, 1250.00 + w_factor)) 
+        self.cell.shapes(nsdm).insert(pya.Box(-1000.00 - l_factor, -1250.00 - w_factor, 1000.00 + l_factor, -830.00 - w_factor))
+          
+        
+        if(self.metal_guard_ring==1):
+          self.cell.shapes(li).insert(pya.Box(-875.00 - l_factor, 955.00 + w_factor, 875.00 + l_factor, 1125.00 + w_factor))
+          self.cell.shapes(li).insert(pya.Box(-875.00 - l_factor, -1125.00 - w_factor, 875.00 + l_factor, -955.00 - w_factor))
+          self.cell.shapes(li).insert(pya.Box(-875.00 - l_factor, -955.00 - w_factor, -705.00 - l_factor, 955.00 + w_factor))
+          self.cell.shapes(li).insert(pya.Box(705.00 + l_factor, -955.00 - w_factor, 875.00 + l_factor, 955.00 + w_factor))
+        else:
+          self.cell.shapes(li).insert(pya.Box(-475.00 - l_factor, 955.00 + w_factor, 475.00 + l_factor, 1125.00 + w_factor))
+          self.cell.shapes(li).insert(pya.Box(-475.00 - l_factor, -1125.00 - w_factor, 475.00 + l_factor, -955.00 - w_factor))
+          self.cell.shapes(li).insert(pya.Box(-875.00 - l_factor, -725.00 - w_factor, -705.00 - l_factor, 725.00 + w_factor))
+          self.cell.shapes(li).insert(pya.Box(705.00 + l_factor, -725.00 - w_factor, 875.00 + l_factor, 725.00 + w_factor))
+        
+        
+        total_length = 595*2 + (self.w-420)
+        licons_plus_spaces = total_length / 170.0
+        licons_num = round(licons_plus_spaces/2)
+        y_upper = 595 + ((licons_num-4)*170)
+        y_lower = y_upper - 170
+    
+        for i in range(licons_num):
+          if(self.left_contact==1):
+            self.cell.shapes(licon).insert(pya.Box(-875.00 - l_factor, y_lower, -705.00 - l_factor, y_upper))
+          if(self.right_contact==1):
+            self.cell.shapes(licon).insert(pya.Box(705.00 + l_factor, y_lower, 875.00 + l_factor, y_upper))
+          y_upper = y_lower - 170
+          y_lower = y_upper - 170
+          
+        if(self.l==150):
+          licons_num = 2
+        else:
+          total_length = 255*2 + (self.l-150)
+          licons_plus_spaces = total_length / 170.0
+          licons_num = round(licons_plus_spaces/2)+1
+          
+        x_left = 255 + ((licons_num-2)*170)
+        x_right = x_left - 170
+    
+        for i in range(licons_num):
+          if(self.top_contact==1):
+            self.cell.shapes(licon).insert(pya.Box(x_left, 955.00 + w_factor, x_right, 1125.00 + w_factor))
+          if(self.bottom_contact==1):
+            self.cell.shapes(licon).insert(pya.Box(x_left, -1125.00 - w_factor, x_right, -955.00 - w_factor))
+          x_left = x_right - 170
+          x_right = x_left - 170
+      
+      
+      
+      self.cell.shapes(diff).insert(pya.Box(-365.00 - l_factor, -210.00 - w_factor, 365.00 + l_factor, 210.00 + w_factor))
+      
+      if(self.guard_ring==0):
+        self.cell.shapes(nwell).insert(pya.Box(-545.00 - l_factor, -710.00 - w_factor, 545.00 + l_factor, 710.00 + w_factor))
+      else:
+        self.cell.shapes(nwell).insert(pya.Box(-1055.00 - l_factor, -1305.00 - w_factor, 1055.00 + l_factor, 1305.00 + w_factor))
+        
+      self.cell.shapes(psdm).insert(pya.Box(-490.00 - l_factor, -335.00 - w_factor, 490.00 + l_factor, 335.00 + w_factor))
+      
+      if(self.l&lt;=300):
+        self.cell.shapes(poly).insert(pya.Box(-165.00, 365.00 + w_factor, 165.00, 695.00 + w_factor))
+        self.cell.shapes(poly).insert(pya.Box(-165.00, -695.00 - w_factor, 165.00, -365.00 - w_factor))
+        self.cell.shapes(poly).insert(pya.Box(-75.00 - l_factor, -365.00 - w_factor, 75.00 + l_factor, 365.00 + w_factor))
+      else:
+        self.cell.shapes(poly).insert(pya.Box(-75.00 - l_factor, -695.00 - w_factor, 75.00 + l_factor, 695.00 + w_factor))
+        self.cell.shapes(npc).insert(pya.Box(-185.00, 345.00 + w_factor, 185.00, 715.00 + w_factor))
+        self.cell.shapes(npc).insert(pya.Box(-185.00, -715.00 - w_factor, 185.00, -345.00 - w_factor))
+      
+      self.cell.shapes(npc).insert(pya.Box(-185.00, 345.00 + w_factor, 185.00, 715.00 + w_factor))
+      self.cell.shapes(npc).insert(pya.Box(-185.00, -715.00 - w_factor, 185.00, -345.00 - w_factor))
+    
+      
+      if(self.l&lt;=300):
+        self.cell.shapes(li).insert(pya.Box(-165.00, 445.00 + w_factor, 165.00, 615.00 + w_factor))
+        self.cell.shapes(li).insert(pya.Box(-165.00, -615.00 - w_factor, 165.00, -445.00 - w_factor))
+      else:
+        self.cell.shapes(li).insert(pya.Box(-75.00-l_factor, 445.00 + w_factor, 75.00+l_factor, 615.00 + w_factor))
+        self.cell.shapes(li).insert(pya.Box(-75.00-l_factor, -615.00 - w_factor, 75.00+l_factor, -445.00 - w_factor))
+      self.cell.shapes(li).insert(pya.Box(-305.00 - l_factor, -230.00 - w_factor, -135.00 - l_factor, 230.00 + w_factor))
+      self.cell.shapes(li).insert(pya.Box(135.00 + l_factor, -230.00 - w_factor, 305.00 + l_factor, 230.00 + w_factor)) 
+      if(self.l&lt;=300):
+        self.cell.shapes(m1).insert(pya.Box(-145.00, 415.00 + w_factor, 145.00, 645.00 + w_factor))
+        self.cell.shapes(m1).insert(pya.Box(-145.00, -645.00 - w_factor, 145.00, -415.00 - w_factor))
+      else:
+        self.cell.shapes(m1).insert(pya.Box(-55.00-l_factor, 415.00 + w_factor, 55.00+l_factor, 645.00 + w_factor))
+        self.cell.shapes(m1).insert(pya.Box(-55.00-l_factor, -645.00 - w_factor, 55.00+l_factor, -415.00 - w_factor))
+        
+      self.cell.shapes(m1).insert(pya.Box(-335.00 - l_factor, -210.00 - w_factor, -105.00 - l_factor, 210.00 + w_factor))
+      self.cell.shapes(m1).insert(pya.Box(105.00 + l_factor, -210.00 - w_factor, 335.00 + l_factor, 210.00 + w_factor))
+      
+      self.cell.shapes(mcon).insert(pya.Box(-85.00, 445.00 + w_factor, 85.00, 615.00 + w_factor))
+      self.cell.shapes(mcon).insert(pya.Box(-85.00, -615.00 - w_factor, 85.00, -445.00 - w_factor))
+      self.cell.shapes(licon).insert(pya.Box(-85.00, 445.00 + w_factor, 85.00, 615.00 + w_factor))
+      self.cell.shapes(licon).insert(pya.Box(-85.00, -615.00 - w_factor, 85.00, -445.00 - w_factor))
+  
+      if(self.w==420):
+        mcons_num=1
+      else:
+        total_length = 85*2 + (self.w-420)
+        mcons_plus_spaces = total_length / 170.0
+        mcons_num = round(mcons_plus_spaces/2)
+      y_upper = 85 + ((mcons_num-1)*170)
+      y_lower = y_upper - 170
+  
+      for i in range(mcons_num):
+        self.cell.shapes(mcon).insert(pya.Box(-305.00 - l_factor, y_lower, -135.00 - l_factor, y_upper))
+        self.cell.shapes(mcon).insert(pya.Box(135.00 + l_factor, y_lower, 305.00 + l_factor, y_upper))
+        self.cell.shapes(licon).insert(pya.Box(-305.00 - l_factor, y_lower, -135.00 - l_factor, y_upper))
+        self.cell.shapes(licon).insert(pya.Box(135.00 + l_factor, y_lower, 305.00 + l_factor, y_upper))
+        y_upper = y_lower - 170
+        y_lower = y_upper - 170
+          
+##########################################################################   
+    
+    elif self.top_gate==1 and self.bottom_gate==0:
+    
+      if(self.guard_ring==1):
+        self.cell.shapes(prBoundary).insert(pya.Box(-790.00 - l_factor, -865.00 - w_factor, 790.00 + l_factor, 865.00 + w_factor))
+        self.cell.shapes(tap).insert(pya.Box(-875.00 - l_factor, 780.00 + w_factor, 875.00 + l_factor, 950.00 + w_factor))
+        self.cell.shapes(tap).insert(pya.Box(-875.00 - l_factor, -950.00 - w_factor, 875.00 + l_factor, -780.00 - w_factor))
+        self.cell.shapes(tap).insert(pya.Box(-875.00 - l_factor, -780.00 - w_factor, -705.00 - l_factor, 780.00 + w_factor))
+        self.cell.shapes(tap).insert(pya.Box(705.00 + l_factor, -780.00 - w_factor, 875.00 + l_factor, 780.00 + w_factor))
+        self.cell.shapes(nsdm).insert(pya.Box(-1000.00 - l_factor, -655.00 - w_factor, -580.00 - l_factor, 655.00 + w_factor))
+        self.cell.shapes(nsdm).insert(pya.Box(580.00 + l_factor, -655.00 - w_factor, 1000.00 + l_factor, 655.00 + w_factor))
+        self.cell.shapes(nsdm).insert(pya.Box(-1000.00 - l_factor, 655.00 + w_factor, 1000.00 + l_factor, 1075.00 + w_factor)) 
+        self.cell.shapes(nsdm).insert(pya.Box(-1000.00 - l_factor, -1075.00 - w_factor, 1000.00 + l_factor, -655.00 - w_factor))  
+        
+        if(self.metal_guard_ring==1):
+          self.cell.shapes(li).insert(pya.Box(-875.00 - l_factor, 780.00 + w_factor, 875.00 + l_factor, 950.00 + w_factor))
+          self.cell.shapes(li).insert(pya.Box(-875.00 - l_factor, -950.00 - w_factor, 875.00 + l_factor, -780.00 - w_factor))
+          self.cell.shapes(li).insert(pya.Box(-875.00 - l_factor, -780.00 - w_factor, -705.00 - l_factor, 780.00 + w_factor))
+          self.cell.shapes(li).insert(pya.Box(705.00 + l_factor, -780.00 - w_factor, 875.00 + l_factor, 780.00 + w_factor))
+        else:
+          self.cell.shapes(li).insert(pya.Box(-475.00 - l_factor, 955.00 + w_factor, 475.00 + l_factor, 1125.00 + w_factor))
+          self.cell.shapes(li).insert(pya.Box(-475.00 - l_factor, -1125.00 - w_factor, 475.00 + l_factor, -955.00 - w_factor))
+          self.cell.shapes(li).insert(pya.Box(-875.00 - l_factor, -725.00 - w_factor, -705.00 - l_factor, 725.00 + w_factor))
+          self.cell.shapes(li).insert(pya.Box(705.00 + l_factor, -725.00 - w_factor, 875.00 + l_factor, 725.00 + w_factor))
+        
+        
+        total_length = 595*2 + (self.w-420)
+        licons_plus_spaces = total_length / 170.0
+        licons_num = round(licons_plus_spaces/2) - 1
+        y_upper = 595 + ((licons_num-4)*170)
+        y_lower = y_upper - 170
+    
+        for i in range(licons_num):
+          if(self.left_contact==1):
+            self.cell.shapes(licon).insert(pya.Box(-875.00 - l_factor, y_lower, -705.00 - l_factor, y_upper))
+          if(self.right_contact==1):
+            self.cell.shapes(licon).insert(pya.Box(705.00 + l_factor, y_lower, 875.00 + l_factor, y_upper))
+          y_upper = y_lower - 170
+          y_lower = y_upper - 170
+          
+        if(self.l==150):
+          licons_num = 2
+        else:
+          total_length = 255*2 + (self.l-150)
+          licons_plus_spaces = total_length / 170.0
+          licons_num = round(licons_plus_spaces/2)+1
+          
+        x_left = 255 + ((licons_num-2)*170)
+        x_right = x_left - 170
+    
+        for i in range(licons_num):
+          if(self.top_contact==1):
+            self.cell.shapes(licon).insert(pya.Box(x_left, 780.00 + w_factor, x_right, 950.00 + w_factor))
+          if(self.bottom_contact==1):
+            self.cell.shapes(licon).insert(pya.Box(x_left, -950.00 - w_factor, x_right, -780.00 - w_factor))
+          x_left = x_right - 170
+          x_right = x_left - 170
+      
+      
+      
+      self.cell.shapes(diff).insert(pya.Box(-365.00 - l_factor, -390.00 - w_factor, 365.00 + l_factor, 30.00 + w_factor))
+      
+      if(self.guard_ring==0):
+        self.cell.shapes(nwell).insert(pya.Box(-545.00 - l_factor, -700.00 - w_factor, 545.00 + l_factor, 530.00 + w_factor))
+      else:
+        self.cell.shapes(nwell).insert(pya.Box(-1055.00 - l_factor, -1130.00 - w_factor, 1055.00 + l_factor, 1130.00 + w_factor))
+        
+      self.cell.shapes(psdm).insert(pya.Box(-490.00 - l_factor, -515.00 - w_factor, 490.00 + l_factor, 155.00 + w_factor))
+      
+      if(self.l&lt;=300):
+        self.cell.shapes(poly).insert(pya.Box(-165.00, 185.00 + w_factor, 165.00, 515.00 + w_factor))
+        self.cell.shapes(poly).insert(pya.Box(-75.00 - l_factor, -520.00 - w_factor, 75.00 + l_factor, 185.00 + w_factor))
+      else:
+        self.cell.shapes(poly).insert(pya.Box(-75.00 - l_factor, -515.00 - w_factor, 75.00 + l_factor, 520.00 + w_factor))
+        
+      
+      self.cell.shapes(npc).insert(pya.Box(-185.00, 165.00 + w_factor, 185.00, 535.00 + w_factor))
+    
+      
+      if(self.l&lt;=300):
+        self.cell.shapes(li).insert(pya.Box(-165.00, 265.00 + w_factor, 165.00, 435.00 + w_factor))
+      else:
+        self.cell.shapes(li).insert(pya.Box(-75.00-l_factor, 265.00 + w_factor, 75.00+l_factor, 435.00 + w_factor))
+        
+      self.cell.shapes(li).insert(pya.Box(-305.00 - l_factor, -410.00 - w_factor, -135.00 - l_factor, 50.00 + w_factor))
+      self.cell.shapes(li).insert(pya.Box(135.00 + l_factor, -410.00 - w_factor, 305.00 + l_factor, 50.00 + w_factor)) 
+      
+      if(self.l&lt;=300):
+        self.cell.shapes(m1).insert(pya.Box(-145.00, 235.00 + w_factor, 145.00, 465.00 + w_factor))
+      else:
+        self.cell.shapes(m1).insert(pya.Box(-55.00-l_factor, 235.00 + w_factor, 55.00+l_factor, 465.00 + w_factor))
+      
+      self.cell.shapes(m1).insert(pya.Box(-335.00 - l_factor, -390.00 - w_factor, -105.00 - l_factor, 30.00 + w_factor))
+      self.cell.shapes(m1).insert(pya.Box(105.00 + l_factor, -390.00 - w_factor, 335.00 + l_factor, 30.00 + w_factor))
+      
+      self.cell.shapes(mcon).insert(pya.Box(-85.00, 265.00 + w_factor, 85.00, 435.00 + w_factor))
+      self.cell.shapes(licon).insert(pya.Box(-85.00, 265.00 + w_factor, 85.00, 435.00 + w_factor))
+     
+  
+      if(self.w==420):
+        mcons_num=1
+      else:
+        total_length = -95*2 + (self.w-420)
+        mcons_plus_spaces = total_length / 170.0
+        mcons_num = round(mcons_plus_spaces/2)
+      y_upper = -95 + ((mcons_num-1)*170)
+      y_lower = y_upper - 170
+  
+      for i in range(mcons_num):
+        self.cell.shapes(mcon).insert(pya.Box(-305.00 - l_factor, y_lower, -135.00 - l_factor, y_upper))
+        self.cell.shapes(mcon).insert(pya.Box(135.00 + l_factor, y_lower, 305.00 + l_factor, y_upper))
+        self.cell.shapes(licon).insert(pya.Box(-305.00 - l_factor, y_lower, -135.00 - l_factor, y_upper))
+        self.cell.shapes(licon).insert(pya.Box(135.00 + l_factor, y_lower, 305.00 + l_factor, y_upper))
+        y_upper = y_lower - 170
+        y_lower = y_upper - 170
+
+###################################################################
+
+    elif (self.top_gate==0 and self.bottom_gate==1):
+    
+      if(self.guard_ring==1):
+        self.cell.shapes(prBoundary).insert(pya.Box(-790.00 - l_factor, -865.00 - w_factor, 790.00 + l_factor, 865.00 + w_factor))
+        self.cell.shapes(tap).insert(pya.Box(-875.00 - l_factor, 780.00 + w_factor, 875.00 + l_factor, 950.00 + w_factor))
+        self.cell.shapes(tap).insert(pya.Box(-875.00 - l_factor, -950.00 - w_factor, 875.00 + l_factor, -780.00 - w_factor))
+        self.cell.shapes(tap).insert(pya.Box(-875.00 - l_factor, -780.00 - w_factor, -705.00 - l_factor, 780.00 + w_factor))
+        self.cell.shapes(tap).insert(pya.Box(705.00 + l_factor, -780.00 - w_factor, 875.00 + l_factor, 780.00 + w_factor))
+        self.cell.shapes(nsdm).insert(pya.Box(-1000.00 - l_factor, -655.00 - w_factor, -580.00 - l_factor, 655.00 + w_factor))
+        self.cell.shapes(nsdm).insert(pya.Box(580.00 + l_factor, -655.00 - w_factor, 1000.00 + l_factor, 655.00 + w_factor))
+        self.cell.shapes(nsdm).insert(pya.Box(-1000.00 - l_factor, 655.00 + w_factor, 1000.00 + l_factor, 1075.00 + w_factor)) 
+        self.cell.shapes(nsdm).insert(pya.Box(-1000.00 - l_factor, -1075.00 - w_factor, 1000.00 + l_factor, -655.00 - w_factor))  
+        
+        if(self.metal_guard_ring==1):
+          self.cell.shapes(li).insert(pya.Box(-875.00 - l_factor, 780.00 + w_factor, 875.00 + l_factor, 950.00 + w_factor))
+          self.cell.shapes(li).insert(pya.Box(-875.00 - l_factor, -950.00 - w_factor, 875.00 + l_factor, -780.00 - w_factor))
+          self.cell.shapes(li).insert(pya.Box(-875.00 - l_factor, -780.00 - w_factor, -705.00 - l_factor, 780.00 + w_factor))
+          self.cell.shapes(li).insert(pya.Box(705.00 + l_factor, -780.00 - w_factor, 875.00 + l_factor, 780.00 + w_factor))
+        else:
+          self.cell.shapes(li).insert(pya.Box(-475.00 - l_factor, 955.00 + w_factor, 475.00 + l_factor, 1125.00 + w_factor))
+          self.cell.shapes(li).insert(pya.Box(-475.00 - l_factor, -1125.00 - w_factor, 475.00 + l_factor, -955.00 - w_factor))
+          self.cell.shapes(li).insert(pya.Box(-875.00 - l_factor, -725.00 - w_factor, -705.00 - l_factor, 725.00 + w_factor))
+          self.cell.shapes(li).insert(pya.Box(705.00 + l_factor, -725.00 - w_factor, 875.00 + l_factor, 725.00 + w_factor))
+        
+        
+        total_length = 595*2 + (self.w-420)
+        licons_plus_spaces = total_length / 170.0
+        licons_num = round(licons_plus_spaces/2) - 1
+        y_upper = 595 + ((licons_num-4)*170)
+        y_lower = y_upper - 170
+    
+        for i in range(licons_num):
+          if(self.left_contact==1):
+            self.cell.shapes(licon).insert(pya.Box(-875.00 - l_factor, y_lower, -705.00 - l_factor, y_upper))
+          if(self.right_contact==1):
+            self.cell.shapes(licon).insert(pya.Box(705.00 + l_factor, y_lower, 875.00 + l_factor, y_upper))
+          y_upper = y_lower - 170
+          y_lower = y_upper - 170
+          
+        if(self.l==150):
+          licons_num = 2
+        else:
+          total_length = 255*2 + (self.l-150)
+          licons_plus_spaces = total_length / 170.0
+          licons_num = round(licons_plus_spaces/2)+1
+          
+        x_left = 255 + ((licons_num-2)*170)
+        x_right = x_left - 170
+    
+        for i in range(licons_num):
+          if(self.top_contact==1):
+            self.cell.shapes(licon).insert(pya.Box(x_left, 780.00 + w_factor, x_right, 950.00 + w_factor))
+          if(self.bottom_contact==1):
+            self.cell.shapes(licon).insert(pya.Box(x_left, -950.00 - w_factor, x_right, -780.00 - w_factor))
+          x_left = x_right - 170
+          x_right = x_left - 170
+      
+      
+      
+      self.cell.shapes(diff).insert(pya.Box(-365.00 - l_factor, -30.00 - w_factor, 365.00 + l_factor, 390.00 + w_factor))
+      
+      if(self.guard_ring==0):
+        self.cell.shapes(nwell).insert(pya.Box(-545.00 - l_factor, -530.00 - w_factor, 545.00 + l_factor, 700.00 + w_factor))
+      else:
+        self.cell.shapes(nwell).insert(pya.Box(-1055.00 - l_factor, -1130.00 - w_factor, 1055.00 + l_factor, 1130.00 + w_factor))
+        
+      self.cell.shapes(psdm).insert(pya.Box(-490.00 - l_factor, -155.00 - w_factor, 490.00 + l_factor, 515.00 + w_factor))
+      
+      if(self.l&lt;=300):
+        self.cell.shapes(poly).insert(pya.Box(-165.00, -515.00 - w_factor, 165.00, -185.00 - w_factor))
+        self.cell.shapes(poly).insert(pya.Box(-75.00 - l_factor, -185.00 - w_factor, 75.00 + l_factor, 520.00 + w_factor))
+      else:
+        self.cell.shapes(poly).insert(pya.Box(-75.00 - l_factor, -520.00 - w_factor, 75.00 + l_factor, 515.00 + w_factor))
+      
+      self.cell.shapes(npc).insert(pya.Box(-185.00, -535.00 - w_factor, 185.00, -165.00 - w_factor))
+      
+      if(self.l&lt;=300):
+        self.cell.shapes(li).insert(pya.Box(-165.00, -435.00 - w_factor, 165.00, -265.00 - w_factor))
+      else:
+        self.cell.shapes(li).insert(pya.Box(-75.00-l_factor, -435.00 - w_factor, 75.00+l_factor, -265.00 - w_factor))
+        
+      self.cell.shapes(li).insert(pya.Box(-305.00 - l_factor, -50.00 - w_factor, -135.00 - l_factor, 410.00 + w_factor))
+      self.cell.shapes(li).insert(pya.Box(135.00 + l_factor, -50.00 - w_factor, 305.00 + l_factor, 410.00 + w_factor))
+       
+      if(self.l&lt;=300):
+        self.cell.shapes(m1).insert(pya.Box(-145.00, -465.00 - w_factor, 145.00, -235.00 - w_factor))
+      else:
+        self.cell.shapes(m1).insert(pya.Box(-55.00-l_factor, -465.00 - w_factor, 55.00+l_factor, -235.00 - w_factor))
+        
+      self.cell.shapes(m1).insert(pya.Box(-335.00 - l_factor, -30.00 - w_factor, -105.00 - l_factor, 390.00 + w_factor))
+      self.cell.shapes(m1).insert(pya.Box(105.00 + l_factor, -30.00 - w_factor, 335.00 + l_factor, 390.00 + w_factor))
+      
+      
+      self.cell.shapes(mcon).insert(pya.Box(-85.00, -435.00 - w_factor, 85.00, -265.00 - w_factor))
+      self.cell.shapes(licon).insert(pya.Box(-85.00, -435.00 - w_factor, 85.00, -265.00 - w_factor))
+  
+      if(self.w==420):
+        mcons_num=1
+      else:
+        total_length = 265*2 + (self.w-420)
+        mcons_plus_spaces = total_length / 170.0
+        mcons_num = round(mcons_plus_spaces/2)
+      y_upper = 265 + ((mcons_num-1)*170)
+      y_lower = y_upper - 170
+  
+      for i in range(mcons_num):
+        self.cell.shapes(mcon).insert(pya.Box(-305.00 - l_factor, y_lower, -135.00 - l_factor, y_upper))
+        self.cell.shapes(mcon).insert(pya.Box(135.00 + l_factor, y_lower, 305.00 + l_factor, y_upper))
+        self.cell.shapes(licon).insert(pya.Box(-305.00 - l_factor, y_lower, -135.00 - l_factor, y_upper))
+        self.cell.shapes(licon).insert(pya.Box(135.00 + l_factor, y_lower, 305.00 + l_factor, y_upper))
+        y_upper = y_lower - 170
+        y_lower = y_upper - 170
+
+##############################################################
+          
+    elif (self.top_gate==0 and self.bottom_gate==0):
+    
+      if(self.guard_ring==1):
+        self.cell.shapes(prBoundary).insert(pya.Box(-790.00 - l_factor, -685.00 - w_factor, 790.00 + l_factor, 685.00 + w_factor))
+        self.cell.shapes(tap).insert(pya.Box(-875.00 - l_factor, 600.00 + w_factor, 875.00 + l_factor, 770.00 + w_factor))
+        self.cell.shapes(tap).insert(pya.Box(-875.00 - l_factor, -770.00 - w_factor, 875.00 + l_factor, -600.00 - w_factor))
+        self.cell.shapes(tap).insert(pya.Box(-875.00 - l_factor, -600.00 - w_factor, -705.00 - l_factor, 600.00 + w_factor))
+        self.cell.shapes(tap).insert(pya.Box(705.00 + l_factor, -600.00 - w_factor, 875.00 + l_factor, 600.00 + w_factor))
+        self.cell.shapes(nsdm).insert(pya.Box(-1000.00 - l_factor, -475.00 - w_factor, -580.00 - l_factor, 475.00 + w_factor))
+        self.cell.shapes(nsdm).insert(pya.Box(580.00 + l_factor, -475.00 - w_factor, 1000.00 + l_factor, 475.00 + w_factor))
+        self.cell.shapes(nsdm).insert(pya.Box(-1000.00 - l_factor, 475.00 + w_factor, 1000.00 + l_factor, 895.00 + w_factor)) 
+        self.cell.shapes(nsdm).insert(pya.Box(-1000.00 - l_factor, -895.00 - w_factor, 1000.00 + l_factor, -475.00 - w_factor))  
+        
+        if(self.metal_guard_ring==1):
+          self.cell.shapes(li).insert(pya.Box(-875.00 - l_factor, 600.00 + w_factor, 875.00 + l_factor, 770.00 + w_factor))
+          self.cell.shapes(li).insert(pya.Box(-875.00 - l_factor, -770.00 - w_factor, 875.00 + l_factor, -600.00 - w_factor))
+          self.cell.shapes(li).insert(pya.Box(-875.00 - l_factor, -600.00 - w_factor, -705.00 - l_factor, 600.00 + w_factor))
+          self.cell.shapes(li).insert(pya.Box(705.00 + l_factor, -600.00 - w_factor, 875.00 + l_factor, 600.00 + w_factor))
+        else:
+          self.cell.shapes(li).insert(pya.Box(-475.00 - l_factor, 955.00 + w_factor, 475.00 + l_factor, 1125.00 + w_factor))
+          self.cell.shapes(li).insert(pya.Box(-475.00 - l_factor, -1125.00 - w_factor, 475.00 + l_factor, -955.00 - w_factor))
+          self.cell.shapes(li).insert(pya.Box(-875.00 - l_factor, -725.00 - w_factor, -705.00 - l_factor, 725.00 + w_factor))
+          self.cell.shapes(li).insert(pya.Box(705.00 + l_factor, -725.00 - w_factor, 875.00 + l_factor, 725.00 + w_factor))
+        
+        
+        total_length = 595*2 + (self.w-420)
+        licons_plus_spaces = total_length / 170.0
+        licons_num = round(licons_plus_spaces/2) - 2
+        y_upper = 595 + ((licons_num-4)*170)
+        y_lower = y_upper - 170
+    
+        for i in range(licons_num):
+          if(self.left_contact==1):
+            self.cell.shapes(licon).insert(pya.Box(-875.00 - l_factor, y_lower, -705.00 - l_factor, y_upper))
+          if(self.right_contact==1):
+            self.cell.shapes(licon).insert(pya.Box(705.00 + l_factor, y_lower, 875.00 + l_factor, y_upper))
+          y_upper = y_lower - 170
+          y_lower = y_upper - 170
+          
+        if(self.l==150):
+          licons_num = 2
+        else:
+          total_length = 255*2 + (self.l-150)
+          licons_plus_spaces = total_length / 170.0
+          licons_num = round(licons_plus_spaces/2)+1
+          
+        x_left = 255 + ((licons_num-2)*170)
+        x_right = x_left - 170
+    
+        for i in range(licons_num):
+          if(self.top_contact==1):
+            self.cell.shapes(licon).insert(pya.Box(x_left, 600.00 + w_factor, x_right, 770.00 + w_factor))
+          if(self.bottom_contact==1):
+            self.cell.shapes(licon).insert(pya.Box(x_left, -770.00 - w_factor, x_right, -600.00 - w_factor))
+          x_left = x_right - 170
+          x_right = x_left - 170
+      
+      
+      
+      self.cell.shapes(diff).insert(pya.Box(-365.00 - l_factor, -210.00 - w_factor, 365.00 + l_factor, 210.00 + w_factor))
+      
+      if(self.guard_ring==0):
+        self.cell.shapes(nwell).insert(pya.Box(-545.00 - l_factor, -520.00 - w_factor, 545.00 + l_factor, 520.00 + w_factor))
+      else:
+        self.cell.shapes(nwell).insert(pya.Box(-1055.00 - l_factor, -950.00 - w_factor, 1055.00 + l_factor, 950.00 + w_factor))
+        
+      self.cell.shapes(psdm).insert(pya.Box(-490.00 - l_factor, -335.00 - w_factor, 490.00 + l_factor, 335.00 + w_factor))
+      
+      
+      self.cell.shapes(poly).insert(pya.Box(-75.00 - l_factor, -340.00 - w_factor, 75.00 + l_factor, 340.00 + w_factor))
+      
+      self.cell.shapes(li).insert(pya.Box(-305.00 - l_factor, -230.00 - w_factor, -135.00 - l_factor, 230.00 + w_factor))
+      self.cell.shapes(li).insert(pya.Box(135.00 + l_factor, -230.00 - w_factor, 305.00 + l_factor, 230.00 + w_factor)) 
+      
+        
+      self.cell.shapes(m1).insert(pya.Box(-335.00 - l_factor, -210.00 - w_factor, -105.00 - l_factor, 210.00 + w_factor))
+      self.cell.shapes(m1).insert(pya.Box(105.00 + l_factor, -210.00 - w_factor, 335.00 + l_factor, 210.00 + w_factor))
+      
+  
+      if(self.w==420):
+        mcons_num=1
+      else:
+        total_length = 85*2 + (self.w-420)
+        mcons_plus_spaces = total_length / 170.0
+        mcons_num = round(mcons_plus_spaces/2)
+      y_upper = 85 + ((mcons_num-1)*170)
+      y_lower = y_upper - 170
+  
+      for i in range(mcons_num):
+        self.cell.shapes(mcon).insert(pya.Box(-305.00 - l_factor, y_lower, -135.00 - l_factor, y_upper))
+        self.cell.shapes(mcon).insert(pya.Box(135.00 + l_factor, y_lower, 305.00 + l_factor, y_upper))
+        self.cell.shapes(licon).insert(pya.Box(-305.00 - l_factor, y_lower, -135.00 - l_factor, y_upper))
+        self.cell.shapes(licon).insert(pya.Box(135.00 + l_factor, y_lower, 305.00 + l_factor, y_upper))
+        y_upper = y_lower - 170
+        y_lower = y_upper - 170
+          
+    
+</text>
+</klayout-macro>

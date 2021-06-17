@@ -10,6 +10,8 @@ The aim of this project is to automatically generate Sky130A devices in Klayout 
 | sky130_fd_pr__nfet01v8         | [sky130_fd_pr__nfet01v8.lym]()        |
 | sky130_fd_pr__pfet01v8         | [sky130_fd_pr__pfet01v8.lym]()        |
 | substrate_contact_1p8V         | [substrate_contact_1p8V.lym]()        |
+| mcon                           | [mcon.lym]()                          |
+| deep n-well region             | [deep_n-well_region.lym]()            |
 | via1                           | [via1.lym]()                          |
 | via2                           | [via2.lym]()                          |
 | via3                           | [via3.lym]()                          |

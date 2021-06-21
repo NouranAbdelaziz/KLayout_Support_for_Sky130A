@@ -79,6 +79,7 @@ class sky130_fd_pr__res_high_po_0p35(pya.PCellDeclarationHelper):
     tap = self.layout.layer(65, 44)
     li = self.layout.layer(67, 20)
     licon = self.layout.layer(66, 44)
+    mcon = self.layout.layer(67, 44)
     
     factor = (self.l-500)*0.5
     
@@ -119,5 +120,14 @@ class sky130_fd_pr__res_high_po_0p35(pya.PCellDeclarationHelper):
       self.cell.shapes(licon).insert(pya.Box(655.00, y_lower, 825.00, y_upper))
       y_upper = y_lower - 170
       y_lower = y_upper - 170
+    
+    y_upper = 2310 + factor
+    y_lower = 2140 + factor
+    for i in range(6):
+      self.cell.shapes(mcon).insert(pya.Box(-85.00, y_lower, 85.00, y_upper))
+      self.cell.shapes(mcon).insert(pya.Box(-85.00, -y_lower, 85.00, -y_upper))
+      y_upper = y_lower - 190
+      y_lower = y_upper - 170
+    
     </text>
 </klayout-macro>

@@ -1,20 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<klayout-macro>
- <description/>
- <version/>
- <category>lvs</category>
- <prolog/>
- <epilog/>
- <doc/>
- <autorun>false</autorun>
- <autorun-early>false</autorun-early>
- <shortcut/>
- <show-in-menu>true</show-in-menu>
- <group-name>lvs_scripts</group-name>
- <menu-path>tools_menu.lvs.end</menu-path>
- <interpreter>dsl</interpreter>
- <dsl-interpreter-name>lvs-dsl-xml</dsl-interpreter-name>
- <text>
+
 # Extraction for SKY130
 #
 ############################
@@ -30,11 +14,13 @@ else
   report_lvs("lvs_report.lvsdb")
 end
 
+
 if $schematic
 #reference netlist
   schematic($schematic)
 else 
-  schematic("sky130_fd_sc_ms__inv_1.cdl") 
+  #schematic("digital_pll.spice")
+  schematic("sky130_fd_sc_hd__conb_1.cdl")
 end
 
 # true: use net names instead of numbers
@@ -45,15 +31,16 @@ spice_with_net_names = true
 # false: no comments
 spice_with_comments = false
 
-# Write extracted netlist to extracted.cir using a special
-# writer delegate
+
 
 if $target_netlist
   target_netlist($target_netlist)
 else
    # target_netlist("netlist.cir", write_spice(spice_with_net_names, spice_with_comments), "The netlist comment goes here.") 
-   target_netlist(File.join(File.dirname(RBA::CellView::active.filename), source.cell_name+"_extracted_2.cir"),write_spice(spice_with_net_names, spice_with_comments),"Extracted by KLayout on : #{Time.now.strftime("%d/%m/%Y %H:%M")}")
+   target_netlist(File.join(File.dirname(RBA::CellView::active.filename), source.cell_name+"_extracted.cir"),write_spice(spice_with_net_names, spice_with_comments),"Extracted by KLayout on : #{Time.now.strftime("%d/%m/%Y %H:%M")}")
 end
+
+#write_spice(spice_with_net_names, spice_with_comments)
 
 # Hierarchical mode
 deep
@@ -92,6 +79,7 @@ HVNTM  = polygons(125, 20)
 POLY  = polygons(66, 20)
 POLYTXT  = input(66, 5)
 POLYPIN  = polygons(66, 16)
+POLY_SHORT = polygons(66,15)
 HVI  = polygons(75, 20)
 LICON  = polygons(66, 44)
 NPC  = polygons(95, 20)
@@ -146,37 +134,61 @@ SUB = polygons(236, 0)
 # SUB = polygon_layer
 
 # Computed layers
-PDIFF = DIFF &amp; NWELL &amp; PSDM
-NTAP = TAP &amp; NWELL &amp; NSDM
-PGATE = PDIFF &amp; POLY
+PDIFF = DIFF & NWELL & PSDM
+NTAP = TAP & NWELL & NSDM
+PGATE = PDIFF & POLY
 PSD = PDIFF - PGATE
 STD_PGATE = PGATE - HVTP - NCM - HVI
-HVT_PGATE = PGATE &amp; HVTP - NCM - HVI
-HV5_PGATE = PGATE - HVTP - NCM &amp; HVI
+HVT_PGATE = PGATE & HVTP - NCM - HVI
+HV5_PGATE = PGATE - HVTP - NCM & HVI
   
-NDIFF = DIFF - NWELL &amp; NSDM
-PTAP = TAP - NWELL &amp; PSDM
-NGATE = NDIFF &amp; POLY
+NDIFF = DIFF - NWELL & NSDM
+PTAP = TAP - NWELL & PSDM
+NGATE = NDIFF & POLY
 NSD = NDIFF - NGATE
 STD_NGATE = NGATE - NCM - LVTN - HVI
-LVT_NGATE = NGATE - NCM &amp; LVTN - HVI
-HV5_NGATE = NGATE - NCM - LVTN &amp; HVI
-HV5NA_NGATE = NGATE - NCM &amp; LVTN &amp; HVI
+LVT_NGATE = NGATE - NCM & LVTN - HVI
+HV5_NGATE = NGATE - NCM - LVTN & HVI
+HV5NA_NGATE = NGATE - NCM & LVTN & HVI
 
 # drawing to physical
 device_scaling(1000000)
 
 # PMOS transistor device extraction
-extract_devices(mos4("pfet_01v8"), { "SD" =&gt; PSD, "G" =&gt; STD_PGATE, "tS" =&gt; PSD, "tD" =&gt; PSD, "tG" =&gt; POLY, "W" =&gt; NWELL })
-extract_devices(mos4("pfet_01v8_hvt"), { "SD" =&gt; PSD, "G" =&gt; HVT_PGATE, "tS" =&gt; PSD, "tD" =&gt; PSD, "tG" =&gt; POLY, "W" =&gt; NWELL })
-extract_devices(mos4("pfet_g5v0d10v5"), { "SD" =&gt; PSD, "G" =&gt; HV5_PGATE, "tS" =&gt; PSD, "tD" =&gt; PSD, "tG" =&gt; POLY, "W" =&gt; NWELL })
+extract_devices(mos4("sky130_fd_pr__pfet_01v8"), { "SD" => PSD, "G" => STD_PGATE, "tS" => PSD, "tD" => PSD, "tG" => POLY, "W" => NWELL })
+extract_devices(mos4("sky130_fd_pr__pfet_01v8_hvt"), { "SD" => PSD, "G" => HVT_PGATE, "tS" => PSD, "tD" => PSD, "tG" => POLY, "W" => NWELL })
+extract_devices(mos4("sky130_fd_pr__pfet_g5v0d10v5"), { "SD" => PSD, "G" => HV5_PGATE, "tS" => PSD, "tD" => PSD, "tG" => POLY, "W" => NWELL })
+
+#extract_devices(mos4("pfet_01v8"), { "SD" => PSD, "G" => STD_PGATE, "tS" => PSD, "tD" => PSD, "tG" => POLY, "W" => NWELL })
+#extract_devices(mos4("pfet_01v8_hvt"), { "SD" => PSD, "G" => HVT_PGATE, "tS" => PSD, "tD" => PSD, "tG" => POLY, "W" => NWELL })
+#extract_devices(mos4("pfet_g5v0d10v5"), { "SD" => PSD, "G" => HV5_PGATE, "tS" => PSD, "tD" => PSD, "tG" => POLY, "W" => NWELL })
 
 # NMOS transistor device extraction
-extract_devices(mos4("nfet_01v8"), { "SD" =&gt; NSD, "G" =&gt; STD_NGATE, "tS" =&gt; NSD, "tD" =&gt; NSD, "tG" =&gt; POLY, "W" =&gt; SUB })
-extract_devices(mos4("nfet_01v8_lvt"), { "SD" =&gt; NSD, "G" =&gt; LVT_NGATE, "tS" =&gt; NSD, "tD" =&gt; NSD, "tG" =&gt; POLY, "W" =&gt; SUB })
-extract_devices(mos4("nfet_g5v0d10v5"), { "SD" =&gt; NSD, "G" =&gt; HV5_NGATE, "tS" =&gt; NSD, "tD" =&gt; NSD, "tG" =&gt; POLY, "W" =&gt; SUB })
-extract_devices(mos4("nfet_01v8_nvt"), { "SD" =&gt; NSD, "G" =&gt; HV5NA_NGATE, "tS" =&gt; NSD, "tD" =&gt; NSD, "tG" =&gt; POLY, "W" =&gt; SUB })
+extract_devices(mos4("sky130_fd_pr__nfet_01v8"), { "SD" => NSD, "G" => STD_NGATE, "tS" => NSD, "tD" => NSD, "tG" => POLY, "W" => SUB })
+extract_devices(mos4("sky130_fd_pr__nfet_01v8_lvt"), { "SD" => NSD, "G" => LVT_NGATE, "tS" => NSD, "tD" => NSD, "tG" => POLY, "W" => SUB })
+extract_devices(mos4("sky130_fd_pr__nfet_g5v0d10v5"), { "SD" => NSD, "G" => HV5_NGATE, "tS" => NSD, "tD" => NSD, "tG" => POLY, "W" => SUB })
+extract_devices(mos4("sky130_fd_pr__nfet_01v8_nvt"), { "SD" => NSD, "G" => HV5NA_NGATE, "tS" => NSD, "tD" => NSD, "tG" => POLY, "W" => SUB })
 
+#extract_devices(mos4("nfet_01v8"), { "SD" => NSD, "G" => STD_NGATE, "tS" => NSD, "tD" => NSD, "tG" => POLY, "W" => SUB })
+#extract_devices(mos4("nfet_01v8_lvt"), { "SD" => NSD, "G" => LVT_NGATE, "tS" => NSD, "tD" => NSD, "tG" => POLY, "W" => SUB })
+#extract_devices(mos4("nfet_g5v0d10v5"), { "SD" => NSD, "G" => HV5_NGATE, "tS" => NSD, "tD" => NSD, "tG" => POLY, "W" => SUB })
+#extract_devices(mos4("nfet_01v8_nvt"), { "SD" => NSD, "G" => HV5NA_NGATE, "tS" => NSD, "tD" => NSD, "tG" => POLY, "W" => SUB })
+
+# Resistor device extraction 
+sheet_rho=0
+#extract_devices(resistor_with_bulk("short", sheet_rho), { "R" => POLY, "C" => LI ,"tA" => MET1PIN, "tB" =>LIPIN, "tW"=> LI, "W"=>LI })
+
+
+POLY_SHORT_RES = POLY & POLY_SHORT
+POLY_SHORT_T = POLY - POLY_SHORT_RES 
+#POLY_SHORT_T = LI & POLY
+POLY_TA = LI
+POLY_TB = LI
+
+
+
+extract_devices(resistor("short", sheet_rho), { "R" => POLY_SHORT_RES, "C" => POLY_SHORT_T, "tA" => POLY, "tB" => POLY})
+#extract_devices(resistor("short", sheet_rho), { "R" => POLY_SHORT_RES, "C" => POLY_SHORT_T})
 
 # Define connectivity for netlist extraction
 
@@ -204,8 +216,11 @@ connect(SUB, SUBTXT)
 connect(SUB, SUBPIN)
 connect(NWELL, NWELLTXT)
 connect(POLY, POLYTXT)
+#connect(POLY, POLY_SHORT)
 connect(LI, LITXT)
 connect(MET1, MET1TXT)
+connect(MET1, MET1PIN)
+connect(MET1PIN, MET1TXT)
 connect(MET2, MET2TXT)
 connect(MET3, MET3TXT)
 connect(MET4, MET4TXT)
@@ -220,24 +235,24 @@ netlist # ... not really required
 # Flatten cells which are present in one netlist only
 align
 # SIMPLIFICATION of the netlist
-netlist.make_top_level_pins
+#netlist.make_top_level_pins
 #netlist.combine_devices
 #netlist.purge
 #netlist.purge_nets
-netlist.simplify
+#netlist.simplify
 puts netlist.to_s
 #schematic.simplify
 
 # Tolerances for the devices extracted parameters
-#  tolerance(device_class_name, parameter_name [, :absolute =&amp;gt; absolute_tolerance] [, :relative =&amp;gt; relative_tolerance])
-tolerance("pfet_01v8", "W", :absolute =&gt; 1.nm, :relative =&gt; 0.001)
-tolerance("pfet_01v8", "L", :absolute =&gt; 1.nm, :relative =&gt; 0.001)
-tolerance("pfet_01v8_hvt", "W", :absolute =&gt; 1.nm, :relative =&gt; 0.001)
-tolerance("pfet_01v8_hvt", "L", :absolute =&gt; 1.nm, :relative =&gt; 0.001)
-tolerance("nfet_01v8", "W", :absolute =&gt; 1.nm, :relative =&gt; 0.001)
-tolerance("nfet_01v8", "L", :absolute =&gt; 1.nm, :relative =&gt; 0.001)
-tolerance("nfet_01v8_lvt", "W", :absolute =&gt; 1.nm, :relative =&gt; 0.001)
-tolerance("nfet_01v8_lvt", "L", :absolute =&gt; 1.nm, :relative =&gt; 0.001)
+#  tolerance(device_class_name, parameter_name [, :absolute =&gt; absolute_tolerance] [, :relative =&gt; relative_tolerance])
+tolerance("pfet_01v8", "W", :absolute => 1.nm, :relative => 0.001)
+tolerance("pfet_01v8", "L", :absolute => 1.nm, :relative => 0.001)
+tolerance("pfet_01v8_hvt", "W", :absolute => 1.nm, :relative => 0.001)
+tolerance("pfet_01v8_hvt", "L", :absolute => 1.nm, :relative => 0.001)
+tolerance("nfet_01v8", "W", :absolute => 1.nm, :relative => 0.001)
+tolerance("nfet_01v8", "L", :absolute => 1.nm, :relative => 0.001)
+tolerance("nfet_01v8_lvt", "W", :absolute => 1.nm, :relative => 0.001)
+tolerance("nfet_01v8_lvt", "L", :absolute => 1.nm, :relative => 0.001)
 
 # NangateOpenCellLibrary Digital gates input equivalence :
 equivalent_pins("*AND2_1", "A", "B")
@@ -284,10 +299,10 @@ equivalent_pins("*XNOR2_2", "A", "B")
 #max_res(1000000)
 #min_caps(1e-15)
 
+#compare 
 if ! compare 
   #raise "ERROR : Netlists don't match"
   puts "ERROR : Netlists don't match"
 else
   puts "INFO : Congratulations! Netlists match."
-end</text>
-</klayout-macro>
+end

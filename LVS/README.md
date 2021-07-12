@@ -1,5 +1,5 @@
 # KLayout LVS
-This readme file is for explaining how to use the LVS scipt to run LVS in kLayout. The LVS was mainly obtained from [this repo](https://github.com/laurentc2/SKY130_for_KLayout) with some additonal modifications.
+This readme file is for explaining how to use the LVS scipt to run LVS in kLayout. The LVS script was mainly obtained from [this repo](https://github.com/laurentc2/SKY130_for_KLayout) with some additonal modifications.
 
 **Running LVS using GUI:**
 1. Download the lvs_sky130.lylvs file  
@@ -29,6 +29,6 @@ Where input is the layout in gds format, schematic is the layout in cdl, spice, 
 * Only NMOS and PMOS devices are supported in this LVS script
 * Currently working on supporting short resistors
 * If a spice file was provided, then there is no need to simplify the netlist using the function "netlist.simplify". 
-* If a spice file was provided, all transistor devices must begin with an "M" not an "X". This can be done using [this]() simple python script.
-* If a cdl file was provided, the lines which begins "+" signs are not readable so they must be removed. This can be done using [this]() simple python script.  
-* If a cdl file was provided, the simplification (device combining) of the Klayout netlist is not always right. That is why it is better to use spice file. 
+* If a spice file was provided, all transistor devices must begin with an "M" not an "X". This can be done using [this](https://github.com/NouranAbdelaziz/KLayout_Support_for_Sky130A/blob/main/LVS/update_spice.py) simple python script.
+* If a cdl file was provided, the lines which begins "+" are not readable so they must be removed. This can be done using [this](https://github.com/NouranAbdelaziz/KLayout_Support_for_Sky130A/blob/main/LVS/update_cdl.py) simple python script.  
+* If a cdl file was provided, the simplification (device combining) of the Klayout netlist is not always done correctly. That is why it is better to use spice file. 

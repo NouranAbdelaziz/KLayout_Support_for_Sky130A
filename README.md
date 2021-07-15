@@ -1,1 +1,6 @@
 # KLayout_Support_for_Sky130A
+The aim of this repository is to modify KLayout Sky130 technology files and explaining how to conduct DRC and LVS checks using KLayout. There is also an added feature which is Sky130 device generation using KLayout PCells. 
+It is divided into three main parts:
+1. **DRC:** there are 5 newly added rules to [this](https://github.com/RTimothyEdwards/open_pdks/blob/master/sky130/klayout/sky130.lydrc) DRC script with their violator cells. More details is provided [here](https://github.com/NouranAbdelaziz/KLayout_Support_for_Sky130A/tree/main/DRC)
+2. **LVS:** some modifications is done to [this](https://github.com/laurentc2/SKY130_for_KLayout/blob/main/lvs/lvs_sky130.lylvs) LVS script. More details and explaination of how to use the script is provided [here](https://github.com/NouranAbdelaziz/KLayout_Support_for_Sky130A/tree/main/LVS)
+3. **Sky130 Device Generation:** using PCells, an instance of sky130 devices such as MOSFETs, resistors, and contacts with variable lengths and widths can be created. More details of how to use the device generation is provided [here](https://github.com/NouranAbdelaziz/KLayout_Support_for_Sky130A/tree/main/Sky130_device_genration)

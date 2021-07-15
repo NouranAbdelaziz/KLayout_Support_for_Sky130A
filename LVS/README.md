@@ -26,7 +26,7 @@ klayout -b -rd input=my_layout.gds -rd report=my_report.lyrdb -rd schematic=refe
 Where input is the layout in gds format, schematic is the layout in cdl, spice, or cir format, and target_netlist is the target extraction file and -r argument should be the LVS script
 
 **Notes:**
-* Only NMOS and PMOS devices are supported in this LVS script
+* Only NMOS, PMOS and ndiode devices are supported in this LVS script
 * Currently working on supporting short resistors
 * If a spice file was provided, then there is no need to simplify the netlist using the function "netlist.simplify". 
 * If a spice file was provided, all transistor devices must begin with an "M" not an "X". This can be done using [this](https://github.com/NouranAbdelaziz/KLayout_Support_for_Sky130A/blob/main/LVS/update_spice.py) simple python script.

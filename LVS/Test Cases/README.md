@@ -1,7 +1,7 @@
 #Test Cases for Klayout LVS
 The table below shows the status of each macro tested. 
 
-**Macro** | **LVS status** | **Notes** |
+|**Macro** | **LVS status** | **Notes** |
 DFFRAM    | Clean except for conb cell | Has an n-diode device |
 digital_pll | Clean except for conb cell ||
 gpio_logic_high | Clean except for conb cell ||

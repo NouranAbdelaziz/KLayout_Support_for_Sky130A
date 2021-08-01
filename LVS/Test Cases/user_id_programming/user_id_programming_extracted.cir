@@ -1,0 +1,22 @@
+* Extracted by KLayout on : 15/07/2021 17:45
+
+.SUBCKT sky130_fd_sc_hd__decap_12
+.ENDS sky130_fd_sc_hd__decap_12
+
+.SUBCKT sky130_fd_sc_hd__decap_8
+.ENDS sky130_fd_sc_hd__decap_8
+
+.SUBCKT sky130_fd_sc_hd__decap_4
+.ENDS sky130_fd_sc_hd__decap_4
+
+.SUBCKT sky130_fd_sc_hd__decap_6
+.ENDS sky130_fd_sc_hd__decap_6
+
+.SUBCKT sky130_fd_sc_hd__conb_1
+.ENDS sky130_fd_sc_hd__conb_1
+
+.SUBCKT sky130_fd_sc_hd__decap_3
+.ENDS sky130_fd_sc_hd__decap_3
+
+.SUBCKT user_id_programming
+.ENDS user_id_programming

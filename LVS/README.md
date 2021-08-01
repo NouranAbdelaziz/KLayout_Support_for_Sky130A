@@ -1,5 +1,5 @@
 # KLayout Sky130 LVS
-This readme file is for explaining how to use the LVS scipt to run LVS in kLayout. The LVS script was mainly obtained from [this repo](https://github.com/laurentc2/SKY130_for_KLayout) with some additonal modifications.
+This readme file is for explaining how to use the LVS scipt to run LVS in kLayout. The LVS script was mainly obtained from [this repo](https://github.com/laurentc2/SKY130_for_KLayout) with some additonal modifications. Please find the test cases and their status [here](https://github.com/NouranAbdelaziz/KLayout_Support_for_Sky130A/tree/main/LVS/Test%20Cases)
 
 **Running LVS using GUI:**
 1. Download the lvs_sky130.lylvs file  

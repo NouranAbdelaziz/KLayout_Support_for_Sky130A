@@ -1,0 +1,87 @@
+* Extracted by KLayout on : 15/07/2021 18:08
+
+.SUBCKT mprj2_logic_high
+X$1 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_3
+X$2 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$3 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$6 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$7 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$8 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_4
+X$10 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$11 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$12 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_4
+X$14 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$15 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$16 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_4
+X$18 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$19 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$20 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_4
+X$22 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$23 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$24 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_4
+X$26 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$27 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$28 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_4
+X$30 \$1 \$1 \$3 VNB sky130_fd_sc_hd__conb_1
+X$32 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_3
+X$34 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_3
+X$35 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$36 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$39 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$40 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$41 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_4
+X$43 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$44 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$45 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_4
+X$47 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$48 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$49 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_4
+X$51 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$52 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$53 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_4
+X$55 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$56 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$57 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_4
+X$59 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$60 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_12
+X$61 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_4
+X$63 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_8
+X$65 \$1 \$3 \$1 VNB sky130_fd_sc_hd__decap_3
+M$1 \$1 \$3 \$1 \$1 sky130_fd_pr__pfet_01v8_hvt L=1970000U W=870000U
++ AS=226200000000P AD=226200000000P PS=2260000U PD=2260000U
+M$2 \$3 \$1 \$3 VNB sky130_fd_pr__nfet_01v8 L=1970000U W=550000U
++ AS=143000000000P AD=143000000000P PS=1620000U PD=1620000U
+.ENDS mprj2_logic_high
+
+.SUBCKT sky130_fd_sc_hd__decap_8 VPB VGND VPWR VNB
+M$1 VPWR VGND VPWR VPB sky130_fd_pr__pfet_01v8_hvt L=2890000U W=870000U
++ AS=226200000000P AD=226200000000P PS=2260000U PD=2260000U
+M$2 VGND VPWR VGND VNB sky130_fd_pr__nfet_01v8 L=2890000U W=550000U
++ AS=143000000000P AD=143000000000P PS=1620000U PD=1620000U
+.ENDS sky130_fd_sc_hd__decap_8
+
+.SUBCKT sky130_fd_sc_hd__conb_1 VPB HI|VPWR LO|VGND VNB
+R$1 LO|VGND LO|VGND 0
+R$2 HI|VPWR HI|VPWR 0
+.ENDS sky130_fd_sc_hd__conb_1
+
+.SUBCKT sky130_fd_sc_hd__decap_4 VPB VGND VPWR VNB
+M$1 VPWR VGND VPWR VPB sky130_fd_pr__pfet_01v8_hvt L=1050000U W=870000U
++ AS=226200000000P AD=226200000000P PS=2260000U PD=2260000U
+M$2 VGND VPWR VGND VNB sky130_fd_pr__nfet_01v8 L=1050000U W=550000U
++ AS=143000000000P AD=143000000000P PS=1620000U PD=1620000U
+.ENDS sky130_fd_sc_hd__decap_4
+
+.SUBCKT sky130_fd_sc_hd__decap_12 VPB VGND VPWR VNB
+M$1 VPWR VGND VPWR VPB sky130_fd_pr__pfet_01v8_hvt L=4730000U W=870000U
++ AS=226200000000P AD=226200000000P PS=2260000U PD=2260000U
+M$2 VGND VPWR VGND VNB sky130_fd_pr__nfet_01v8 L=4730000U W=550000U
++ AS=143000000000P AD=143000000000P PS=1620000U PD=1620000U
+.ENDS sky130_fd_sc_hd__decap_12
+
+.SUBCKT sky130_fd_sc_hd__decap_3 VPB VGND VPWR VNB
+M$1 VPWR VGND VPWR VPB sky130_fd_pr__pfet_01v8_hvt L=590000U W=870000U
++ AS=226200000000P AD=226200000000P PS=2260000U PD=2260000U
+M$2 VGND VPWR VGND VNB sky130_fd_pr__nfet_01v8 L=590000U W=550000U
++ AS=143000000000P AD=143000000000P PS=1620000U PD=1620000U
+.ENDS sky130_fd_sc_hd__decap_3

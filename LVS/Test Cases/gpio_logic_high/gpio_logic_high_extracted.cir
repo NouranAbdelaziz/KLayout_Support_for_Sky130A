@@ -1,0 +1,69 @@
+* Extracted by KLayout on : 15/07/2021 16:03
+
+.SUBCKT gpio_logic_high
+X$1 \$1 \$2 \$1 VNB sky130_fd_sc_hd__decap_3
+X$2 \$1 \$1 \$2 VNB sky130_fd_sc_hd__decap_6
+X$4 \$1 \$2 \$1 VNB sky130_fd_sc_hd__decap_8
+X$6 \$1 \$2 \$1 VNB sky130_fd_sc_hd__decap_3
+X$7 \$1 \$2 \$1 VNB sky130_fd_sc_hd__decap_4
+X$8 \$1 \$2 \$1 VNB sky130_fd_sc_hd__decap_3
+X$9 \$1 \$2 \$1 VNB sky130_fd_sc_hd__decap_12
+X$10 \$1 \$2 \$1 VNB sky130_fd_sc_hd__decap_3
+X$11 \$1 \$1 \$2 VNB sky130_fd_sc_hd__decap_6
+X$12 \$1 \$2 \$1 VNB sky130_fd_sc_hd__decap_3
+X$14 \$1 \$2 \$1 VNB sky130_fd_sc_hd__decap_8
+X$16 \$1 \$2 \$1 VNB sky130_fd_sc_hd__decap_3
+X$17 \$1 \$2 \$1 VNB sky130_fd_sc_hd__decap_4
+X$18 \$1 \$2 \$1 VNB sky130_fd_sc_hd__decap_3
+X$19 \$1 \$2 \$1 VNB sky130_fd_sc_hd__decap_4
+X$21 \$1 \$2 \$1 VNB sky130_fd_sc_hd__decap_3
+X$22 \$1 \$2 \$1 VNB sky130_fd_sc_hd__decap_12
+X$23 \$1 \$2 \$1 VNB sky130_fd_sc_hd__decap_3
+X$24 \$1 \$1 \$2 VNB sky130_fd_sc_hd__decap_6
+X$25 \$1 \$2 \$1 VNB sky130_fd_sc_hd__decap_3
+X$27 \$1 \$2 \$1 VNB sky130_fd_sc_hd__decap_8
+X$29 \$1 \$2 \$1 VNB sky130_fd_sc_hd__decap_3
+X$30 \$1 \$2 \$1 VNB sky130_fd_sc_hd__decap_4
+X$31 \$1 \$2 \$1 VNB sky130_fd_sc_hd__decap_3
+X$33 \$1 \$1 \$2 VNB sky130_fd_sc_hd__conb_1
+.ENDS gpio_logic_high
+
+.SUBCKT sky130_fd_sc_hd__conb_1 VPB HI|VPWR LO|VGND VNB
+R$1 LO|VGND LO|VGND 0
+R$2 HI|VPWR HI|VPWR 0
+.ENDS sky130_fd_sc_hd__conb_1
+
+.SUBCKT sky130_fd_sc_hd__decap_4 VPB VGND VPWR VNB
+M$1 VPWR VGND VPWR VPB sky130_fd_pr__pfet_01v8_hvt L=1050000U W=870000U
++ AS=226200000000P AD=226200000000P PS=2260000U PD=2260000U
+M$2 VGND VPWR VGND VNB sky130_fd_pr__nfet_01v8 L=1050000U W=550000U
++ AS=143000000000P AD=143000000000P PS=1620000U PD=1620000U
+.ENDS sky130_fd_sc_hd__decap_4
+
+.SUBCKT sky130_fd_sc_hd__decap_12 VPB VGND VPWR VNB
+M$1 VPWR VGND VPWR VPB sky130_fd_pr__pfet_01v8_hvt L=4730000U W=870000U
++ AS=226200000000P AD=226200000000P PS=2260000U PD=2260000U
+M$2 VGND VPWR VGND VNB sky130_fd_pr__nfet_01v8 L=4730000U W=550000U
++ AS=143000000000P AD=143000000000P PS=1620000U PD=1620000U
+.ENDS sky130_fd_sc_hd__decap_12
+
+.SUBCKT sky130_fd_sc_hd__decap_8 VPB VGND VPWR VNB
+M$1 VPWR VGND VPWR VPB sky130_fd_pr__pfet_01v8_hvt L=2890000U W=870000U
++ AS=226200000000P AD=226200000000P PS=2260000U PD=2260000U
+M$2 VGND VPWR VGND VNB sky130_fd_pr__nfet_01v8 L=2890000U W=550000U
++ AS=143000000000P AD=143000000000P PS=1620000U PD=1620000U
+.ENDS sky130_fd_sc_hd__decap_8
+
+.SUBCKT sky130_fd_sc_hd__decap_6 VPB VPWR VGND VNB
+M$1 VPWR VGND VPWR VPB sky130_fd_pr__pfet_01v8_hvt L=1970000U W=870000U
++ AS=226200000000P AD=226200000000P PS=2260000U PD=2260000U
+M$2 VGND VPWR VGND VNB sky130_fd_pr__nfet_01v8 L=1970000U W=550000U
++ AS=143000000000P AD=143000000000P PS=1620000U PD=1620000U
+.ENDS sky130_fd_sc_hd__decap_6
+
+.SUBCKT sky130_fd_sc_hd__decap_3 VPB VGND VPWR VNB
+M$1 VPWR VGND VPWR VPB sky130_fd_pr__pfet_01v8_hvt L=590000U W=870000U
++ AS=226200000000P AD=226200000000P PS=2260000U PD=2260000U
+M$2 VGND VPWR VGND VNB sky130_fd_pr__nfet_01v8 L=590000U W=550000U
++ AS=143000000000P AD=143000000000P PS=1620000U PD=1620000U
+.ENDS sky130_fd_sc_hd__decap_3

@@ -48,3 +48,21 @@ The aim of this project is to automatically generate Sky130A devices in Klayout 
     
 10. Then press “OK” and now you can place the cell wherever you want. 
     ![image](https://user-images.githubusercontent.com/79912650/120479699-894a3600-c3ae-11eb-920a-4737bec7ec73.png)
+    
+    
+**Devices to-be generated:**
+* Other NMOS and PMOS types
+* n-diode
+* p-diode
+* NPN
+* PNP
+* inductors
+* p-diff resistor (1.8V)
+* n-diff resistor (5.0V)
+* p-diff resistor (5.0V)
+* poly resistor 48.2 Ohm/sq
+* poly resistor 319.8 Ohm/sq
+* Pwell resistor 3050 Ohm/sq
+* metal resistors
+* MIM cap
+* vpp

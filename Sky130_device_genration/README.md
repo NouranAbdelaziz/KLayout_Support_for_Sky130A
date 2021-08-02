@@ -2,7 +2,7 @@
 
 The aim of this project is to automatically generate Sky130A devices in Klayout just like in magic. This is achieved through using PCells property in klayout in which you can write a python script for a cell, and then you will be able to get an instance from it automatically using the Pcell menu. Also, the length and width of the device are adjustable and are given as parameters to the PCell.
 
-**How?** The selected device is first generated through magic and then I use its gds file in klayout to redraw the layers given the coordinates of the layer shape. However, this must be done with consideration of variable length and width. I do this by adding a factor to the minimum length and width and this factor depends on the new given length or width. 
+**How?** The selected device is first generated through magic and then I use its gds file in Klayout to redraw the layers layer-by-layer given the coordinates of the two points of layer rectangle shape. However, this must be done with consideration of variable length and width. I do this by adding a factor to the coordinates of the layer polygon which belongs to the device with minimum length and width and this factor depends on the new given length or width of the device (parameters in the Pcell). 
 
 **Generated devices and links to python script:**
 | Device Name                    | Link to File                          |

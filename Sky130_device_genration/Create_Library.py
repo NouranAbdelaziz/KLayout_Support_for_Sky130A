@@ -68,11 +68,17 @@ class MyLib(pya.Library):
     self.layout().register_pcell("sky130_fd_pr__res_generic_m1", sky130_fd_pr__res_generic_m1())
     self.layout().register_pcell("sky130_fd_pr__nfet01v8", sky130_fd_pr__nfet01v8())
     self.layout().register_pcell("sky130_fd_pr__pfet01v8", sky130_fd_pr__pfet01v8())
-    self.layout().register_pcell("substrate_contact_1p8V", substrate_contact_1p8V())
+    self.layout().register_pcell("sky130_fd_pr__pfet01v8_hvt", sky130_fd_pr__pfet01v8_hvt())
+    self.layout().register_pcell("sky130_fd_pr__pfet_g5v0d10v5", sky130_fd_pr__pfet_g5v0d10v5())
+    self.layout().register_pcell("sky130_fd_pr__nfet_g5v0d10v5", sky130_fd_pr__nfet_g5v0d10v5())
+    self.layout().register_pcell("substrate contact (1.8V)", substrate_contact_1p8V())
+    self.layout().register_pcell("substrate contact (5.0V)", substrate_contact_5p0V())
     self.layout().register_pcell("via1", via1())
     self.layout().register_pcell("via2", via2())
     self.layout().register_pcell("via3", via3())
     self.layout().register_pcell("via4", via4())
+    self.layout().register_pcell("mcon", mcon())
+    self.layout().register_pcell("deep n-well region", deep_n_well_region())
     # That would be the place to put in more PCells ...
     
     # Register us with the name "MyLib".

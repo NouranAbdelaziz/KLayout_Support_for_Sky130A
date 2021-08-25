@@ -1,20 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<klayout-macro>
- <description/>
- <version/>
- <category>drc</category>
- <prolog/>
- <epilog/>
- <doc/>
- <autorun>false</autorun>
- <autorun-early>false</autorun-early>
- <shortcut/>
- <show-in-menu>true</show-in-menu>
- <group-name>drc_scripts</group-name>
- <menu-path>tools_menu.drc.end</menu-path>
- <interpreter>dsl</interpreter>
- <dsl-interpreter-name>drc-dsl-xml</dsl-interpreter-name>
- <text>#
+#
 #  DRC  for  SKY130 according to :
 #   https://skywater-pdk.readthedocs.io/en/latest/rules/periphery.html
 #   https://skywater-pdk.readthedocs.io/en/latest/rules/layers.html
@@ -185,7 +169,7 @@ class DRC::DRCLayer
   def with_holes(min, max)
     new_data = RBA::Region::new
     self.data.each do |p|
-      if p.holes &gt;= (min || 0) &amp;&amp; (!max || p.holes &lt;= max)
+      if p.holes >= (min || 0) && (!max || p.holes <= max)
         new_data.insert(p)
       end
     end
@@ -199,7 +183,7 @@ info("DRC section")
 
 if FEOL
 info("FEOL section")
-gate = diff &amp; poly
+gate = diff & poly
 
 #   dnwell
 dnwell.width(3.0, euclidian).output("dnwell.2", "dnwell.2 : min. dnwell width : 3.0um")
@@ -319,7 +303,7 @@ poly.and(poly_rs).and(rpm).separation(hvntm, 0.185, euclidian).output("rpm.9", "
 rpm.and(pwbm).output("rpm.10", "rpm.107 : min. rpm spacing pwbm: na")
 
 #   varac
-varac = poly &amp; tap &amp; (nwell - hvi) - areaid_ce
+varac = poly & tap & (nwell - hvi) - areaid_ce
 tap.not(poly).edges.and(varac.edges).space(0.18, euclidian).output("varac.1", "varac.1: min. varac channel length : 0.18um")
 tap.and(poly).edges.and(varac.edges).space(1.0, euclidian).output("varac.2", "varac.2: min. varac channel wdth : 1.0um")
 varac.separation(hvtp, 0.18, euclidian).output("varac.3", "varac.3: min. varac channel space to hvtp : 0.18um")
@@ -329,7 +313,7 @@ tap.overlapping(varac).separation(difftap, 0.27, euclidian).polygons.without_are
 nwell.overlapping(varac).and(diff.and(nwell)).output("varac.7", "varac.7:  nwell overlapping varac channel must not overlap p+diff")
 
 #   photo
-photodiode = dnwell &amp; areaid_po
+photodiode = dnwell & areaid_po
 photodiode.edges.without_length(3.0).output("photo.2", "photo.2 : minimum/maximum width of photodiode : 3.0um")
 photodiode.isolated(5.0, euclidian).output("photo.3", "photo.3 : mini. photodiode spacing : 5.0um")
 photodiode.separation(dnwell, 5.3, euclidian).output("photo.4", "photo.4 : mini. photodiode spacing to dnwell : 5.3um")
@@ -371,17 +355,13 @@ psdm.with_area(0..0.265).output("n/psdm.10b", "n/psdm.10b : min. psdm area : 0.2
 
 
 #   licon
-licon.not(poly.interacting(poly_rs)).edges.without_length(0.17).output("licon.1", "licon.1 : minimum/maximum width of licon : 0.17um")
-licon.and(poly.interacting(poly_rs)).not_interacting((licon.and(poly.interacting(poly_rs)).edges.with_length(0.19)).or(licon.and(poly.interacting(poly_rs)).edges.with_length(2.0))).output("licon.1b/c", "licon.1b/c : minimum/maximum width/length of licon inside poly resistor : 2.0/0.19um")
+licon.not(poly.interacting(poly_rs).and(rpm | urpm)).edges.without_length(0.17).output("licon.1", "licon.1 : minimum/maximum width of licon : 0.17um")
+licon.and(poly.interacting(poly_rs).and(rpm | urpm)).not_interacting((licon.and(poly.interacting(poly_rs).and(rpm | urpm)).edges.with_length(0.19)).or(licon.and(poly.interacting(poly_rs).and(rpm)).edges.with_length(2.0))).output("licon.1b/c", "licon.1b/c : minimum/maximum width/length of licon inside poly resistor : 2.0/0.19um")
 licon.isolated(0.17, euclidian).output("licon.2", "licon.2 : min. licon spacing : 0.17um")
-licon.and(poly.interacting(poly_rs)).edges.with_length(0.19).space(0.35, euclidian).output("licon.2b", "licon.2b : min. licon 0.19um edge on resistor spacing : 0.35um")
-licon.interacting(licon.and(poly.interacting(poly_rs)).edges.with_length(2.0)).separation(licon.and(poly.interacting(poly_rs)), 0.51, euclidian).output("licon.2c", "licon.2c : min. licon 2.0um edge on resistor spacing : 0.51um")
-licon.and(poly.interacting(poly_rs)).separation(licon.not(poly.interacting(poly_rs)), 0.51, euclidian).output("licon.2d", "licon.2d : min. licon on resistor spacing other licon : 0.51um")
+licon.and(poly.interacting(poly_rs).and(rpm | urpm)).edges.with_length(0.19).space(0.35, euclidian).output("licon.2b", "licon.2b : min. licon 0.19um edge on resistor spacing : 0.35um")
+licon.interacting(licon.and(poly.interacting(poly_rs).and(rpm | urpm)).edges.with_length(2.0)).separation(licon.and(poly.interacting(poly_rs).and(rpm | urpm)), 0.51, euclidian).output("licon.2c", "licon.2c : min. licon 2.0um edge on resistor spacing : 0.51um")
+licon.and(poly.interacting(poly_rs).and(rpm | urpm)).separation(licon.not(poly.interacting(poly_rs).and(rpm | urpm)), 0.51, euclidian).output("licon.2d", "licon.2d : min. licon on resistor spacing other licon : 0.51um")
 # rule licon.3 not coded
-#licon.bbox
-#licon.rectilinear.count.output("licon.3", "Only min. square licons are allowed except die seal ring where licons are (licon CD)*L")
-licon.non_rectangles
-
 licon.not(li).not(poly.or(diff).or(tap)).output("licon.4", "licon.4 : min. licon must overlap li and (poly or tap or diff) ")
 diff.enclosing(licon, 0.04, euclidian).output("licon.5", "licon.5 : min. diff enclosure of licon : 0.04um")
 tap.edges.and(diff.edges).separation(licon.and(tap).edges, 0.06, euclidian).output("licon.6", "licon.6 : min. abutting edge spacing to licon tap : 0.06um")
@@ -420,7 +400,7 @@ rects.each {
 puts "width: #{r.bbox.width}, height: #{r.bbox.height}" 
 if r.bbox.width.round(10) != r.bbox.height.round(10)
   #x=polygons(r)
-  licon.with_bbox_width(r.bbox.width).and(licon.with_bbox_height(r.bbox.height)).output("licon.3", "Only min. square licons are allowed except die seal ring where licons are (licon CD)*L")
+  licon.not(poly.interacting(poly_rs).and((rpm | urpm))).with_bbox_width(r.bbox.width).and(licon.with_bbox_height(r.bbox.height)).output("licon.3", "Only min. square licons are allowed except die seal ring where licons are (licon CD)*L")
 end }
 
 
@@ -953,5 +933,4 @@ pwell_rs.ongrid(0.005).output("pwell_rs_OFFGRID", "x.1b : OFFGRID vertex on pwel
 pwell_rs.with_angle(0 .. 45).output("pwell_rs_angle", "x.3a : non 45 degree angle pwell_rs")
 areaid_re.ongrid(0.005).output("areaid_re_OFFGRID", "x.1b : OFFGRID vertex on areaid.re")
 
-end #OFFGRID</text>
-</klayout-macro>
+end #OFFGRID

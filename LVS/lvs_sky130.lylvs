@@ -36,10 +36,10 @@ if $schematic
   schematic($schematic)
 else 
   #schematic("mgmt_protect_hv (2)_new.spice") 
-  schematic("digital_pll.spice") 
+  #schematic("digital_pll.spice") 
   #schematic("sky130_fd_sc_hd__conb_1.cdl")
   #schematic("sky130_fd_sc_hd__diode_2.spice")
-  #schematic("sky130_fd_sc_hd__nand2_1.spice")
+  schematic("sky130_fd_sc_hd__inv_1.spice")
   #schematic("spm.spice") 
 end 
 
@@ -57,7 +57,7 @@ if $target_netlist
   target_netlist($target_netlist)
 else
    # target_netlist("netlist.cir", write_spice(spice_with_net_names, spice_with_comments), "The netlist comment goes here.") 
-   target_netlist(File.join(File.dirname(RBA::CellView::active.filename), source.cell_name+"_extracted.cir"),write_spice(spice_with_net_names, spice_with_comments),"Extracted by KLayout on : #{Time.now.strftime("%d/%m/%Y %H:%M")}")
+   target_netlist(File.join(File.dirname(RBA::CellView::active.filename), source.cell_name+"_extracted.spice"),write_spice(spice_with_net_names, spice_with_comments),"Extracted by KLayout on : #{Time.now.strftime("%d/%m/%Y %H:%M")}")
 end
 
 #write_spice(spice_with_net_names, spice_with_comments)
@@ -76,10 +76,10 @@ BOUND  = polygons(235, 4)
 DNWELL  = polygons(64, 18)
 PWRES  = polygons(64, 13)
 NWELL  = polygons(64, 20)
-NWELLTXT  = input(64, 5)
-NWELLPIN  = polygons(64, 16)
-SUBTXT  = input(64, 59)
-SUBPIN  = input(122, 16)
+NWELL_LABEL  = input(64, 5)
+NWELL_PIN  = polygons(64, 16)
+PWELL_LABEL  = input(64, 59)
+PWELL_PIN  = input(122, 16)
 DIFF  = polygons(65, 20)
 TAP  = polygons(65, 44)
 PSDM  = polygons(94, 20)
@@ -97,8 +97,8 @@ URPM  = polygons(79, 20)
 LDNTM  = polygons(11, 44)
 HVNTM  = polygons(125, 20)
 POLY  = polygons(66, 20)
-POLYTXT  = input(66, 5)
-POLYPIN  = polygons(66, 16)
+POLY_LABEL  = input(66, 5)
+POLY_PIN  = polygons(66, 16)
 POLY_SHORT = polygons(66,15)
 HVI  = polygons(75, 20)
 LICON  = polygons(66, 44)
@@ -108,33 +108,33 @@ POLYRES  = polygons(66, 13)
 POLYSHO  = polygons(66, 15)
 DIODE  = polygons(81, 23)
 LI  = polygons(67, 20)
-LITXT  = input(67, 5)
-LIPIN  = polygons(67, 16)
+LI_LABEL  = input(67, 5)
+LI_PIN  = polygons(67, 16)
 LIRES  = polygons(67, 13)
 MCON  = polygons(67, 44)
 MET1  = polygons(68, 20)
-MET1TXT  = input(68, 5)
-MET1PIN  = polygons(68, 16)
+MET1_LABEL  = input(68, 5)
+MET1_PIN  = polygons(68, 16)
 MET1RES  = polygons(68, 13)
 VIA1  = polygons(68, 44)
 MET2  = polygons(69, 20)
-MET2TXT  = input(69, 5)
-MET2PIN  = polygons(69, 16)
+MET2_LABEL  = input(69, 5)
+MET2_PIN  = polygons(69, 16)
 MET2RES  = polygons(69, 13)
 VIA2  = polygons(69, 44)
 MET3  = polygons(70, 20)
-MET3TXT  = input(70, 5)
-MET3PIN  = polygons(70, 16)
+MET3_LABEL  = input(70, 5)
+MET3_PIN  = polygons(70, 16)
 MET3RES  = polygons(70, 13)
 VIA3  = polygons(70, 44)
 MET4  = polygons(71, 20)
-MET4TXT  = input(71, 5)
-MET4PIN  = polygons(71, 16)
+MET4_LABEL  = input(71, 5)
+MET4_PIN  = polygons(71, 16)
 MET4RES  = polygons(71, 13)
 VIA4  = polygons(71, 44)
 MET5  = polygons(72, 20)
-MET5TXT  = input(72, 5)
-MET5PIN  = polygons(72, 16)
+MET5_LABEL  = input(72, 5)
+MET5_PIN  = polygons(72, 16)
 MET5RES  = polygons(72, 13)
 RDL  = polygons(74, 20)
 RDLTXT  = input(74, 5)
@@ -148,8 +148,7 @@ FILLOBSM2  = polygons(105, 52)
 FILLOBSM3  = polygons(107, 24)
 FILLOBSM4  = polygons(112, 4)
 NCM = polygons(92, 44)
-PWELLPIN = polygons(122,16)
-PWELLTXT = polygons(64,59)
+
 
 # Bulk layer for terminal provisioning
 SUB = polygons(236, 0)
@@ -249,41 +248,47 @@ connect(MET3, VIA3)
 connect(VIA3,   MET4)
 connect(MET4, VIA4)
 connect(VIA4,   MET5)
-# Attaching labels
-connect(SUB, SUBPIN)
-connect(SUBPIN, SUBTXT)
-connect(NWELL, NWELLTXT)
-connect(POLY, POLYTXT)
-#connect(POLY, POLY_SHORT_T)
-connect(LI, LITXT)
-connect(MET1, MET1TXT)
-connect(MET1, MET1PIN)
-connect(MET1PIN, MET1TXT)
-connect(MET2, MET2TXT)
-connect(MET3, MET3TXT)
-connect(MET4, MET4TXT)
-connect(MET5, MET5TXT)
 
-#connect(SUBPIN, MCON )
+# Attaching labels
+connect(SUB, PWELL_PIN)
+connect(PWELL_PIN, PWELL_LABEL)
+connect(NWELL, NWELL_PIN)
+connect(NWELL_PIN, NWELL_LABEL)
+connect(POLY, POLY_PIN)
+connect(POLY_PIN, POLY_LABEL)
+#connect(POLY, POLY_SHORT_T)
+connect(LI, LI_PIN)
+connect(LI_PIN, LI_LABEL)
+connect(MET1, MET1_PIN)
+connect(MET1_PIN, MET1_LABEL)
+connect(MET2, MET2_PIN)
+connect(MET2_PIN, MET2_LABEL)
+connect(MET3, MET3_PIN)
+connect(MET3_PIN, MET3_LABEL)
+connect(MET4, MET4_PIN)
+connect(MET4_PIN, MET4_LABEL)
+connect(MET5, MET5_PIN)
+connect(MET5_PIN, MET5_LABEL)
 
 
 # Global
 connect_global(SUB, "VNB")
 #connect_global(SUB, "VGND")
 
+
 # Actually performs the extraction
 netlist # ... not really required
 
 # Flatten cells which are present in one netlist only
 
-align
+#align
 
 # SIMPLIFICATION of the netlist
 netlist.make_top_level_pins
-#netlist.combine_devices
+netlist.combine_devices
 #netlist.purge
 netlist.purge_nets
-#netlist.simplify
+netlist.simplify
 puts netlist.to_s
 #schematic.simplify
 

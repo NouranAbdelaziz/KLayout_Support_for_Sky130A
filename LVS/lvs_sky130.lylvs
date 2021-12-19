@@ -36,10 +36,11 @@ if $schematic
   schematic($schematic)
 else 
   #schematic("mgmt_protect_hv (2)_new.spice") 
-  #schematic("digital_pll.spice") 
+  schematic("digital_pll.spice")  
   #schematic("sky130_fd_sc_hd__conb_1.cdl")
+  #schematic("sky130_fd_sc_hd__nand2_1.cdl") 
   #schematic("sky130_fd_sc_hd__diode_2.spice")
-  schematic("sky130_fd_sc_hd__inv_1.spice")
+  #schematic("sky130_fd_sc_hd__inv_1.spice")
   #schematic("spm.spice") 
 end 
 
@@ -212,10 +213,9 @@ SUB.output("This is the substrate")
 
 # tA, tB whether they are POLY, LI, MET1 shorting problem. If there are no terminals, the labels are not recognized. 
 #extract_devices(resistor("sky130_fd_pr__res_generic_po", sheet_rho), { "R" =&gt; POLY_SHORT_RES, "C" =&gt; POLY, "tA" =&gt; POLY_TA, "tB" =&gt;POLY_TB})
-extract_devices(resistor("sky130_fd_pr__res_generic_po", sheet_rho), { "R" =&gt; POLY_SHORT_RES, "C" =&gt; POLY})
 #extract_devices(resistor_with_bulk("sky130_fd_pr__res_generic_po", sheet_rho), { "R" =&gt; POLY, "C" =&gt; LI ,"tA" =&gt; MET1PIN, "tB" =&gt;LIPIN, "tW"=&gt; LI, "W"=&gt;LI })
 
-
+extract_devices(resistor("sky130_fd_pr__res_generic_po", sheet_rho), { "R" =&gt; POLY_SHORT_RES, "C" =&gt; POLY})
 
 # Diode device extraction
 
@@ -285,10 +285,10 @@ netlist # ... not really required
 
 # SIMPLIFICATION of the netlist
 netlist.make_top_level_pins
-netlist.combine_devices
-#netlist.purge
-netlist.purge_nets
-netlist.simplify
+#netlist.combine_devices
+netlist.purge
+#netlist.purge_nets
+#netlist.simplify
 puts netlist.to_s
 #schematic.simplify
 
